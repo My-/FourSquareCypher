@@ -1,5 +1,6 @@
 package ie.gmit.sw;
 
+import java.util.Optional;
 import java.util.Queue;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
@@ -7,18 +8,23 @@ import java.util.stream.Collectors;
 
 public class Cypher {
 
+    private static final String KEY = "THEQUICKBROWNFXJMPSVLAZYDG";
+    private static final String ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    private static final IntUnaryOperator replace_J_To_I = ch -> ch == 'J' ? 'I' : ch;
+    private static final IntFunction<String> toCharacter = it -> String.valueOf((char)it);
+
 
     /**
-     * Generates keyword using given word.
-     *
-     * @param words
-     * @return
+     * <hr>
+     * Generates keyword using given word(s).
+     * <hr>
+     * @param words is words which will be used to generate keyword. Keyword will start with it.
+     * @param useKey uses special key (mixed letters), if false uses alphabet (ordered letters). Keyword will end with it.
+     * @return generated keyword.
      */
-    static String generateKeyword(String...words){
-        String key = "THEQUICKBROWNFXJMPSVLAZYDG";
-        String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        return createKeyword(key, words);
+    static String generateKeyword(boolean useKey, String...words){
+        return createKeyword(useKey ? KEY : ABC, words);
     }
 
 //    private static String cleanKeyword_v1(String...words){
@@ -34,20 +40,16 @@ public class Cypher {
 //    }
 
     /**
+     * <hr>
      * Method creates unique, 25 character long keyword.
-     *
-     * Time complexity: O(n) - linear
-     * Space complexity:
+     * <hr>
+     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(?)</b> - ??.</i>
      *
      * @param alphabet will be used to fill missing letters in keyword (order it appears matters).
      * @param keyWords will be used FIRST for generating keyword.
      * @return unique 25 character long created keyword.
      */
     static String createKeyword(String alphabet, String...keyWords ){
-
-        IntUnaryOperator replace_J_To_I = ch -> ch == 'J' ? 'I' : ch;
-        IntFunction<String> toCharacter = it -> String.valueOf((char)it);
-
         return (String.join("", keyWords) + alphabet)
                     .codePoints() // https://stackoverflow.com/a/36878434/5322506
                     .filter(Character::isLetter)
@@ -58,9 +60,7 @@ public class Cypher {
                     .collect(Collectors.joining());
     }
 
-//    static String toDigraphs(String s){
-//        Queue<char[]> diagraphs = // https://stackoverflow.com/a/25441208/5322506
-//    }
+
 
     /**
      * <hr>
@@ -80,8 +80,20 @@ public class Cypher {
      * @param y letters Y position in Alphabet matrix starting from 0 ("zero").
      * @return letter from matrix at position (x,y) or "space" if not valid X or Y.
      */
-    static char getLetter(int x, int y){
+    static char getAlphabetLetter(int x, int y){
         if(0 > x || x > 4 || 0 > y || y > 4){ return ' '; } // if X or Y are off limits
         return (char)(5 * x + y + 65 + (x > 1 || x == 1 && y == 4 ? 1 : 0));
+    }
+
+    static Optional<Position> getAlphabetLettersPosition(char letter){
+        return Optional.of(
+                x > 1 || x == 1 && y == 4
+        );
+    }
+
+    static Bigram incript(Bigram bigram){
+        char ch1 = bigram.get(1), ch2 = bigram.get(2);
+
+        return bigram;
     }
 }
