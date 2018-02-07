@@ -7,48 +7,92 @@ import java.util.stream.Collectors;
 
 public class Cypher {
 
-    private static final String KEY = "THEQUICKBROWNFXJMPSVLAZYDG";
-    private static final String ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private CrypticKey key_one;
+    private CrypticKey key_two;
 
-    private static final IntUnaryOperator replace_J_To_I = ch -> ch == 'J' ? 'I' : ch;
-    private static final IntFunction<String> toCharacter = it -> String.valueOf((char)it);
-
-    private Map<Character, Position> keywordData = Collections.synchronizedMap(new HashMap<>(25));
-    private char[] keyword;
 
     private Cypher(){ }
 
+    /**
+     * <hr>
+     * Factory method for creating new Cypher instance.
+     * <hr>
+     * <i>TODO:Time complexity: <b>O(?)</b> - ?, <br>  Space complexity: <b>O(1)</b> - ??.</i>
+     *
+     * @param keyword_one will be used for creating cyphers key_one.
+     * @param keyword_two will be used for creating cyphers key_two.
+     * @param alphabet will be used to populate missing letters (order maters).
+     * @return new Cypher instance
+     */
+    public static Cypher of(String keyword_one, String keyword_two, String alphabet){
+        Cypher cypher = new Cypher();
+        cypher.key_one = createKey(keyword_one, alphabet);
+        cypher.key_two = createKey(keyword_two, alphabet);
 
+        return cypher;
+    }
 
     /**
      * <hr>
-     * Fills keywordData from given char[];
+     * Factory method for creating new Cypher instance.
+     * Uses normal alphabet.
+     * <hr>
+     * <i>TODO:Time complexity: <b>O(?)</b> - ?, <br>  Space complexity: <b>O(1)</b> - ??.</i>
+     *
+     * @param keyword_one will be used for creating cyphers key_one.
+     * @param keyword_two will be used for creating cyphers key_two.
+     * @return new Cypher instance
+     */
+    public static Cypher of(String keyword_one, String keyword_two){
+        return Cypher.of(keyword_one, keyword_two, ABC);
+    }
+
+    /**
+     * <hr>
+     * Factory method for creating new Cypher instance.
+     * Uses normal alphabet.
+     * <hr>
+     * <i>TODO:Time complexity: <b>O(?)</b> - ?, <br>  Space complexity: <b>O(1)</b> - ??.</i>
+     *
+     * @return new Cypher instance
+     */
+    public static Cypher of(){
+        return Cypher.of(createRandonString(25), createRandonString(25), ABC);
+    }
+
+    /**
+     * <hr>
+     * Fills key_one from given char[];
      * <hr>
      * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(1)</b> - ??.</i>
-     *
-     * @param keyword is data which should be filled to keywordData field.
-     * @param keywordData will be filed with data from keyword.
+     * 
+     * @param keyword is data which should be filled to key_one field.
+     * @param key will be filed with data from keyword.
      */
-    static void makeKeywordData(char[] keyword, Map<Character, Position> keywordData){
+    static void createKey(char[] keyword, Map<Character, Position> key){
         if( keyword.length != 25 ){ throw new IllegalArgumentException("Invalid keyword length: "+ keyword.length); }
-        for( int i = 0; i < keyword.length; i++){ keywordData.putIfAbsent(keyword[i], Position.of(i / 5, i % 5)); }
-        if( keywordData.size() != 25 ){ throw new IllegalArgumentException("Invalid keyword. Probably duplicates: "+ keyword); }
+        for( int i = 0; i < keyword.length; i++){ key.putIfAbsent(keyword[i], Position.of(i / 5, i % 5)); }
+        if( key.size() != 25 ){ throw new IllegalArgumentException("Invalid keyword. Probably duplicates: "+ keyword); }
     }
 
 
-    /**
-     * <hr>
-     * Generates keyword using given word(s).
-     * <hr>
-     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(?)</b> - ??.</i>
-     *
-     * @param words is words which will be used to generate keyword. Keyword will start with it.
-     * @param useKey uses special key (mixed letters), if false uses alphabet (ordered letters). Keyword will end with it.
-     * @return generated keyword.
-     */
-    static String generateKeyword(boolean useKey, String...words){
-        return createKeyword(useKey ? KEY : ABC, words);
-    }
+
+
+
+
+//    /**
+//     * <hr>
+//     * Generates keyword using given word(s).
+//     * <hr>
+//     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(?)</b> - ??.</i>
+//     *
+//     * @param keyword is word which will be used to generate keyword. Keyword will start with it.
+//     * @param useSpecialAlphabet uses special key (mixed letters), if false uses alphabet (ordered letters). Keyword will end with it.
+//     * @return generated keyword.
+//     */
+//    static String generateKey(boolean useSpecialAlphabet, String keyword){
+//        return createUniqueString(useSpecialAlphabet ? ABC_MIX : ABC, keyword);
+//    }
 
 //    private static String cleanKeyword_v1(String...words){
 //        return String
@@ -61,27 +105,6 @@ public class Cypher {
 //                .mapToObj(it -> String.valueOf((char)it))
 //                .collect(Collectors.joining());
 //    }
-
-    /**
-     * <hr>
-     * Method creates unique, 25 character long keyword.
-     * <hr>
-     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(?)</b> - ??.</i>
-     *
-     * @param alphabet will be used to fill missing letters in keyword (order it appears matters).
-     * @param keyWords will be used FIRST for generating keyword.
-     * @return unique 25 character long created keyword.
-     */
-    static String createKeyword(String alphabet, String...keyWords ){
-        return (String.join("", keyWords) + alphabet)
-                    .codePoints() // https://stackoverflow.com/a/36878434/5322506
-                    .filter(Character::isLetter)
-                    .map(Character::toUpperCase)
-                    .map(replace_J_To_I)
-                    .distinct()
-                    .mapToObj(toCharacter)
-                    .collect(Collectors.joining());
-    }
 
 
 
@@ -103,9 +126,12 @@ public class Cypher {
      * @param y letters Y position in Alphabet matrix starting from 0 ("zero").
      * @return letter from matrix at position (x,y) or "space" if not valid X or Y.
      */
-    static char getAlphabetLetter(int x, int y){
+    static char getLetter_Alphabet(int x, int y){
         if(0 > x || x > 4 || 0 > y || y > 4){ return ' '; } // if X or Y are off limits
         return (char)(5 * x + y + 65 + (x > 1 || x == 1 && y == 4 ? 1 : 0));
+    }
+    static char getLetter_Alphabet(Position pos){
+        return getLetter_Alphabet(pos.X, pos.Y);
     }
 
     /**
@@ -125,17 +151,35 @@ public class Cypher {
      * @param letter letters position we look in matrix.
      * @return Position of given letter or Optional.empty() if not found.
      */
-    static Optional<Position> getAlphabetLettersPosition(char letter){
+    static Optional<Position> getPosition_Alphabet(char letter){
         char ch = Character.toUpperCase(letter);
         if( !Character.isLetter(letter) || ch == 'J'){ return Optional.empty(); }
 
         ch -= 'A' + (ch > 'J' ? 1 : 0);
         return Optional.of( Position.of(ch / 5, ch % 5) );
     }
+    
 
-//    static Bigram incript(Bigram bigram){
-//        char ch1 = bigram.get(1), ch2 = bigram.get(2);
-//
-//        return bigram;
-//    }
+
+
+    public Bigram incript(Bigram bigram){
+        Position pos1,pos2;
+        char ch1, ch2;
+        int x1, x2, y1, y2;
+
+        if( Cypher.getPosition_Alphabet(bigram.get(1)).isPresent()
+                && Cypher.getPosition_Alphabet(bigram.get(2)).isPresent() ) {
+            pos1 = Cypher.getPosition_Alphabet(bigram.get(1)).get();
+            pos2 = Cypher.getPosition_Alphabet(bigram.get(2)).get();
+        }else{
+            throw new RuntimeException("Wrong Bigram: "+ bigram);
+        }
+
+        x1 = pos1.X; y1 = pos1.Y; x2 = pos2.X; y2 = pos2.Y;
+
+        ch1 = getLetterFromKey(Position.of(x1, y2), CrypticKey.ONE);
+        ch2 = getLetterFromKey(Position.of(x2, y1), CrypticKey.TWO);
+
+        return Bigram.of(new char[]{ch1, ch2});
+    }
 }
