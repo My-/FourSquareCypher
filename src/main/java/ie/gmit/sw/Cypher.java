@@ -1,7 +1,6 @@
 package ie.gmit.sw;
 
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.Collectors;
@@ -14,11 +13,35 @@ public class Cypher {
     private static final IntUnaryOperator replace_J_To_I = ch -> ch == 'J' ? 'I' : ch;
     private static final IntFunction<String> toCharacter = it -> String.valueOf((char)it);
 
+    private Map<Character, Position> keywordData = Collections.synchronizedMap(new HashMap<>(25));
+    private char[] keyword;
+
+    private Cypher(){ }
+
+
+
+    /**
+     * <hr>
+     * Fills keywordData from given char[];
+     * <hr>
+     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(1)</b> - ??.</i>
+     *
+     * @param keyword is data which should be filled to keywordData field.
+     * @param keywordData will be filed with data from keyword.
+     */
+    static void makeKeywordData(char[] keyword, Map<Character, Position> keywordData){
+        if( keyword.length != 25 ){ throw new IllegalArgumentException("Invalid keyword length: "+ keyword.length); }
+        for( int i = 0; i < keyword.length; i++){ keywordData.putIfAbsent(keyword[i], Position.of(i / 5, i % 5)); }
+        if( keywordData.size() != 25 ){ throw new IllegalArgumentException("Invalid keyword. Probably duplicates: "+ keyword); }
+    }
+
 
     /**
      * <hr>
      * Generates keyword using given word(s).
      * <hr>
+     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(?)</b> - ??.</i>
+     *
      * @param words is words which will be used to generate keyword. Keyword will start with it.
      * @param useKey uses special key (mixed letters), if false uses alphabet (ordered letters). Keyword will end with it.
      * @return generated keyword.
