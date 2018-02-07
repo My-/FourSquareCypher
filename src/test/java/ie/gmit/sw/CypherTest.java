@@ -6,6 +6,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CypherTest {
     @Test
+    void getAlphabetLettersPosition() {
+        assertAll(
+                ()-> assertEquals(Position.of(0,0), Cypher.getAlphabetLettersPosition('A').get()),
+                ()-> assertEquals(Position.of(0,4), Cypher.getAlphabetLettersPosition('E').get()),
+                ()-> assertEquals(Position.of(1,3), Cypher.getAlphabetLettersPosition('I').get()),
+                ()-> assertEquals(Position.of(1,4), Cypher.getAlphabetLettersPosition('K').get()),
+                ()-> assertEquals(Position.of(2,0), Cypher.getAlphabetLettersPosition('L').get()),
+                ()-> assertEquals(Position.of(2,4), Cypher.getAlphabetLettersPosition('P').get()),
+                ()-> assertEquals(Position.of(4,4), Cypher.getAlphabetLettersPosition('Z').get()),
+
+                ()-> assertNotEquals(Position.of(2,2), Cypher.getAlphabetLettersPosition('A').get(), "(2,2) != "+ Cypher.getAlphabetLettersPosition('A').get()),
+                ()-> assertFalse( Cypher.getAlphabetLettersPosition('J').isPresent() )
+        );
+    }
+
+    @Test
     void getLetter() {
         assertAll(
                 ()-> assertEquals('A', Cypher.getAlphabetLetter(0,0)),
@@ -35,7 +51,7 @@ class CypherTest {
         String ab = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 //        System.out.println(Cypher.generateKeyword(keyword));
-        assertEquals("HELOFURSTAPQICKBWNXMVZYDG", Cypher.generateKeyword(keyword));
+        assertEquals("HELOFURSTAPQICKBWNXMVZYDG", Cypher.generateKeyword(true, keyword));
     }
 
 }

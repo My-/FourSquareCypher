@@ -85,15 +85,34 @@ public class Cypher {
         return (char)(5 * x + y + 65 + (x > 1 || x == 1 && y == 4 ? 1 : 0));
     }
 
+    /**
+     * <hr>
+     * <p>Method gets given letter Position (x,y) from alphabet matrix.</p>
+     * <ul style="list-style-type:none">
+     *      <li>A B C D E</li>
+     *      <li>F G H I K</li>
+     *      <li>L M N O P</li>
+     *      <li>Q R S T U</li>
+     *      <li>V W X Y Z</li>
+     * </ul>
+     * <p><strong>NOTE: Here is no letter 'J' in Alphabet.</strong></p>
+     * <hr>
+     * <i>Time complexity: <b>O(1)</b> - constant, <br> Space complexity: <b>O(0)</b> - none.</i>
+     *
+     * @param letter letters position we look in matrix.
+     * @return Position of given letter or Optional.empty() if not found.
+     */
     static Optional<Position> getAlphabetLettersPosition(char letter){
-        return Optional.of(
-                x > 1 || x == 1 && y == 4
-        );
+        char ch = Character.toUpperCase(letter);
+        if( !Character.isLetter(letter) || ch == 'J'){ return Optional.empty(); }
+
+        ch -= 'A' + (ch > 'J' ? 1 : 0);
+        return Optional.of( Position.of(ch / 5, ch % 5) );
     }
 
-    static Bigram incript(Bigram bigram){
-        char ch1 = bigram.get(1), ch2 = bigram.get(2);
-
-        return bigram;
-    }
+//    static Bigram incript(Bigram bigram){
+//        char ch1 = bigram.get(1), ch2 = bigram.get(2);
+//
+//        return bigram;
+//    }
 }
