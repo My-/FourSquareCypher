@@ -31,12 +31,12 @@ public class MyUtils {
      * <hr>
      * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(?)</b> - ??.</i>
      *
-     * @param keyword will be used FIRST for generating keyword.
-     * @param alphabet will be used to fill missing letters in keyword (order it appears matters).
+     * @param str1 will be used FIRST for generating keyword.
+     * @param str2 will be used to fill missing letters in keyword (order it appears matters).
      * @return unique character string.
      */
-    static String createUniqueString(String keyword, String alphabet ){
-        return (keyword + alphabet)
+    static String createUniqueString(String str1, String str2 ){
+        return (str1 + str2)
                 .codePoints() // https://stackoverflow.com/a/36878434/5322506
                 .filter(Character::isLetter)
                 .map(Character::toUpperCase)

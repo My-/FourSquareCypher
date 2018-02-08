@@ -1,5 +1,7 @@
 package ie.gmit.sw;
 
+import java.util.Arrays;
+
 public class Bigram {
 
     private char[] bigram = new char[2];
@@ -20,6 +22,11 @@ public class Bigram {
     }
 
     public char get(int n){
-        return this.bigram[n -1];
+        return this.bigram[n];
+    }
+
+    @Override
+    public String toString() {
+        return "Bigram{" + Arrays.toString(bigram) +'}';
     }
 }
