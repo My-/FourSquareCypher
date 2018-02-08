@@ -14,7 +14,7 @@ public class MyUtils {
     public static final IntFunction<String> toCharacter = it -> String.valueOf((char)it);
 
 
-    static String createRandonString(int length){
+    static String createRandomString(int length){
         return new Random(System.nanoTime())
                 .ints('A', 'Z' +1)
                 .map(replace_J_To_I)

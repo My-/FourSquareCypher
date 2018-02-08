@@ -1,9 +1,6 @@
 package ie.gmit.sw;
 
 import java.util.*;
-import java.util.function.IntFunction;
-import java.util.function.IntUnaryOperator;
-import java.util.stream.Collectors;
 
 public class Cypher {
 
@@ -26,8 +23,8 @@ public class Cypher {
      */
     public static Cypher of(String keyword_one, String keyword_two, String alphabet){
         Cypher cypher = new Cypher();
-        cypher.key_one = createKey(keyword_one, alphabet);
-        cypher.key_two = createKey(keyword_two, alphabet);
+        cypher.key_one = CrypticKey.of(keyword_one, alphabet);
+        cypher.key_two = CrypticKey.of(keyword_two, alphabet);
 
         return cypher;
     }
@@ -44,7 +41,11 @@ public class Cypher {
      * @return new Cypher instance
      */
     public static Cypher of(String keyword_one, String keyword_two){
-        return Cypher.of(keyword_one, keyword_two, ABC);
+        Cypher cypher = new Cypher();
+        cypher.key_one = CrypticKey.of(keyword_one);
+        cypher.key_two = CrypticKey.of(keyword_two);
+
+        return cypher;
     }
 
     /**
@@ -57,54 +58,12 @@ public class Cypher {
      * @return new Cypher instance
      */
     public static Cypher of(){
-        return Cypher.of(createRandonString(25), createRandonString(25), ABC);
+        Cypher cypher = new Cypher();
+        cypher.key_one = CrypticKey.of();
+        cypher.key_two = CrypticKey.of();
+
+        return cypher;
     }
-
-    /**
-     * <hr>
-     * Fills key_one from given char[];
-     * <hr>
-     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(1)</b> - ??.</i>
-     * 
-     * @param keyword is data which should be filled to key_one field.
-     * @param key will be filed with data from keyword.
-     */
-    static void createKey(char[] keyword, Map<Character, Position> key){
-        if( keyword.length != 25 ){ throw new IllegalArgumentException("Invalid keyword length: "+ keyword.length); }
-        for( int i = 0; i < keyword.length; i++){ key.putIfAbsent(keyword[i], Position.of(i / 5, i % 5)); }
-        if( key.size() != 25 ){ throw new IllegalArgumentException("Invalid keyword. Probably duplicates: "+ keyword); }
-    }
-
-
-
-
-
-
-//    /**
-//     * <hr>
-//     * Generates keyword using given word(s).
-//     * <hr>
-//     * <i>Time complexity: <b>O(n)</b> - linear, <br> TODO: Space complexity: <b>O(?)</b> - ??.</i>
-//     *
-//     * @param keyword is word which will be used to generate keyword. Keyword will start with it.
-//     * @param useSpecialAlphabet uses special key (mixed letters), if false uses alphabet (ordered letters). Keyword will end with it.
-//     * @return generated keyword.
-//     */
-//    static String generateKey(boolean useSpecialAlphabet, String keyword){
-//        return createUniqueString(useSpecialAlphabet ? ABC_MIX : ABC, keyword);
-//    }
-
-//    private static String cleanKeyword_v1(String...words){
-//        return String
-//                .join("", words)
-//                .toUpperCase()
-//                .replaceAll("J", "I")
-//                .replaceAll("[^A-Z]", "") // all except letters. https://regex101.com/
-//                .codePoints() // https://stackoverflow.com/a/36878434/5322506
-//                .distinct()
-//                .mapToObj(it -> String.valueOf((char)it))
-//                .collect(Collectors.joining());
-//    }
 
 
 
@@ -126,12 +85,12 @@ public class Cypher {
      * @param y letters Y position in Alphabet matrix starting from 0 ("zero").
      * @return letter from matrix at position (x,y) or "space" if not valid X or Y.
      */
-    static char getLetter_Alphabet(int x, int y){
+    static char get(int x, int y){
         if(0 > x || x > 4 || 0 > y || y > 4){ return ' '; } // if X or Y are off limits
         return (char)(5 * x + y + 65 + (x > 1 || x == 1 && y == 4 ? 1 : 0));
     }
-    static char getLetter_Alphabet(Position pos){
-        return getLetter_Alphabet(pos.X, pos.Y);
+    static char get(Position pos){
+        return get(pos.X, pos.Y);
     }
 
     /**
@@ -151,7 +110,7 @@ public class Cypher {
      * @param letter letters position we look in matrix.
      * @return Position of given letter or Optional.empty() if not found.
      */
-    static Optional<Position> getPosition_Alphabet(char letter){
+    static Optional<Position> get(char letter){
         char ch = Character.toUpperCase(letter);
         if( !Character.isLetter(letter) || ch == 'J'){ return Optional.empty(); }
 
@@ -163,23 +122,25 @@ public class Cypher {
 
 
     public Bigram incript(Bigram bigram){
-        Position pos1,pos2;
-        char ch1, ch2;
-        int x1, x2, y1, y2;
+        Position[] pos = getPositions(bigram);
+        int x1 = pos[0].X, y1 = pos[0].Y, x2 = pos[1].X, y2 = pos[1].Y;
+        char ch1 = key_one.get(Position.of(x1, y2));
+        char ch2 = key_two.get(Position.of(x2, y1));
 
-        if( Cypher.getPosition_Alphabet(bigram.get(1)).isPresent()
-                && Cypher.getPosition_Alphabet(bigram.get(2)).isPresent() ) {
-            pos1 = Cypher.getPosition_Alphabet(bigram.get(1)).get();
-            pos2 = Cypher.getPosition_Alphabet(bigram.get(2)).get();
+        return Bigram.of(new char[]{ch1, ch2});
+    }
+
+    static Position[] getPositions(Bigram bigram){
+        Position pos[] = new Position[2];
+
+        if( Cypher.get(bigram.get(1)).isPresent()
+                && Cypher.get(bigram.get(2)).isPresent() ) {
+            pos[0] = Cypher.get(bigram.get(1)).get();
+            pos[1] = Cypher.get(bigram.get(2)).get();
         }else{
             throw new RuntimeException("Wrong Bigram: "+ bigram);
         }
 
-        x1 = pos1.X; y1 = pos1.Y; x2 = pos2.X; y2 = pos2.Y;
-
-        ch1 = getLetterFromKey(Position.of(x1, y2), CrypticKey.ONE);
-        ch2 = getLetterFromKey(Position.of(x2, y1), CrypticKey.TWO);
-
-        return Bigram.of(new char[]{ch1, ch2});
+        return pos;
     }
 }
