@@ -1,5 +1,6 @@
 package ie.gmit.sw;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -17,12 +18,12 @@ public class Alphabet {
     /**
      * Square matrix (n*n) size (n).
      */
-    int matrixSize;
+    private int matrixSize;
 
     /**
      * Alphabet of unique characters.
      */
-    char[] alphabet;
+    private char[] alphabet;
 
     /**
      * Alphabet data same as <i>char[] alphabet</i>. Letter is mapped to position of that letter.
@@ -149,5 +150,12 @@ public class Alphabet {
         return Optional.of( Position.of(ch / 5, ch % 5) );
     }
 
+    public int getMatrixSize() {
+        return matrixSize;
+    }
 
+    @Override
+    public String toString() {
+        return String.valueOf(alphabet);
+    }
 }
