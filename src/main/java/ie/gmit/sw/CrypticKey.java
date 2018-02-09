@@ -2,7 +2,7 @@ package ie.gmit.sw;
 
 import java.util.*;
 
-public class CrypticKey {
+public class CrypticKey implements CharacterKey{
 
     private Map<Character, Position> mapKey = Collections.synchronizedMap(new HashMap<>(25));
     private char[] charKey;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class Alphabet {
+public class Alphabet implements CharacterKey{
 
     public static final int DEFAULT_LENGTH = 25;
     public static final String STANDARD_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -120,7 +120,7 @@ public class Alphabet {
      * @param letter letters position we look in matrix.
      * @return Position of given letter or Optional.empty() if not found.
      */
-    Optional<Position> get(char letter){
+    public Optional<Position> get(char letter){
         if( isStandard ){ return Alphabet.getFromStandard(letter); }
         return Optional.ofNullable(this.mapAlphabet.get(letter));
     }
