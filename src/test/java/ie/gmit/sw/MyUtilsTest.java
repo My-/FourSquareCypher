@@ -14,14 +14,15 @@ class MyUtilsTest {
         Set<String> s = new HashSet<>();
 
         assertAll(
-                ()->  IntStream.range(0, 10).forEach(it-> assertTrue(s.add(MyUtils.createRandomString(10))))  
+                ()->  IntStream.range(0, 10).forEach(it-> assertTrue(
+                        s.add(MyUtils.createRandomCharacterString(10, MyUtils.noFilter, MyUtils.doNothing))))
         );
     }
 
     @Test
     void createUniqueString() {
         String s1 = "ASDFG", s2 = "FGHJKL";
-        String s = MyUtils.createUniqueString(s1, s2);
+        String s = MyUtils.createUniqueString(s1, s2, MyUtils.noFilter, MyUtils.doNothing);
         Set<Character> set = new HashSet<>();
 
         for(char ch : s.toCharArray() ){

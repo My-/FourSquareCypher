@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 
 public class Alphabet implements CharacterKey{
 
@@ -44,12 +46,23 @@ public class Alphabet implements CharacterKey{
      * @param alphabet custom alphabet data.
      */
     private Alphabet(String alphabet){
-        String str = MyUtils.createUniqueString(alphabet, ""); // remove duplicates
+        IntPredicate filter = MyUtils.upperCaseLettersOnly.or(MyUtils.space);
+        IntUnaryOperator mapper = MyUtils.replace_J_To_I.andThen(MyUtils.replace_Q_To_K);
+
+        String str = MyUtils.createUniqueString(alphabet, "", filter, mapper); // remove duplicates
         int sqNum = (int)Math.sqrt(str.length()); // get square of that strings length
         str = str.substring(0, (sqNum * sqNum)); // trim string to square
 
         this.alphabet = str.toCharArray();
         this.matrixSize = sqNum;
+    }
+
+    /**
+     * Constructor for creating copy alphabet.
+     * @param alphabet custom alphabet data.
+     */
+    public static Alphabet of(Alphabet alphabet) {
+        return new Alphabet(alphabet.toString());
     }
 
     /**
@@ -82,6 +95,7 @@ public class Alphabet implements CharacterKey{
      * @param position position in matrix of the letter.
      * @return letter from matrix at position (x,y) or "space" if not valid X or Y.
      */
+    @Override
     public char get(Position position){
         if(isStandard){ return Alphabet.getFromStandard(position); }
 
@@ -120,6 +134,7 @@ public class Alphabet implements CharacterKey{
      * @param letter letters position we look in matrix.
      * @return Position of given letter or Optional.empty() if not found.
      */
+    @Override
     public Optional<Position> get(char letter){
         if( isStandard ){ return Alphabet.getFromStandard(letter); }
         return Optional.ofNullable(this.mapAlphabet.get(letter));

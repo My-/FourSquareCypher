@@ -1,6 +1,8 @@
 package ie.gmit.sw;
 
 import java.util.*;
+import java.util.function.IntPredicate;
+import java.util.function.IntUnaryOperator;
 
 public class CrypticKey implements CharacterKey{
 
@@ -8,11 +10,15 @@ public class CrypticKey implements CharacterKey{
     private char[] charKey;
     private int matrixSize;
 
+    private  CrypticKey(){ }
+
     private CrypticKey(String keyword, Alphabet alphabet){
-        this.charKey = MyUtils.createUniqueString(keyword, alphabet.toString()).toCharArray();
+        this.charKey = MyUtils.createUniqueString(
+                keyword, alphabet.toString(), MyUtils.noFilter, MyUtils.doNothing).toCharArray();
         this.matrixSize = alphabet.getMatrixSize();
         for( int i = 0; i < charKey.length; i++){ mapKey.putIfAbsent(charKey[i], Position.of(i / 5, i % 5)); }
     }
+
 
     /**
      * Factory method to create key from given keyword and given alphabet.
@@ -30,7 +36,10 @@ public class CrypticKey implements CharacterKey{
      * @return new instance of random CrypticKey class.
      */
     public static CrypticKey of(){
-        return new CrypticKey(MyUtils.createRandomString(15), Alphabet.of());
+        IntPredicate filter = MyUtils.upperCaseLettersOnly.or(MyUtils.space);
+        IntUnaryOperator mapper = MyUtils.replace_J_To_I.andThen(MyUtils.replace_Q_To_K);
+
+        return new CrypticKey(MyUtils.createRandomCharacterString(15, filter, mapper), Alphabet.of());
     }
 
     /**
@@ -38,6 +47,7 @@ public class CrypticKey implements CharacterKey{
      * @param letter given letter.
      * @return position of the given letter.
      */
+    @Override
     public Optional<Position> get(char letter){
         return Optional.ofNullable(this.mapKey.get(letter));
     }
@@ -47,6 +57,7 @@ public class CrypticKey implements CharacterKey{
      * @param position given position.
      * @return character at given position.
      */
+    @Override
     public char get(Position position){
         int i = position.X * matrixSize + position.Y;
         return  this.charKey[i];
@@ -55,5 +66,10 @@ public class CrypticKey implements CharacterKey{
     // TODO: Use only for debugging/testing.
     String showKey() {
         return String.valueOf(charKey);
+    }
+
+    @Override
+    public String toString() {
+        return this.showKey();
     }
 }

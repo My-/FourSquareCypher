@@ -1,5 +1,6 @@
 package ie.gmit.sw;
 
+import java.io.BufferedWriter;
 import java.util.Optional;
 
 public class oldStuff {
@@ -54,6 +55,33 @@ public class oldStuff {
 //
 //        ch -= 'A' + (ch > 'J' ? 1 : 0);
 //        return Optional.of( Position.of(ch / 5, ch % 5) );
+//    }
+
+//    //  https://stackoverflow.com/a/42232129/5322506
+////        BufferedReader br = null;
+//    BufferedWriter bw = null;
+//
+//        try {
+////            br = new BufferedReader(new InputStreamReader(new FileInputStream(new File("origin.txt"))));
+//        bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("target.txt"))));
+//
+//        int i;
+//        do {
+//            i = br.read();
+//            if (i != -1) {
+//                bw.write(i);
+//            }
+//        } while (i != -1);
+//
+//    } catch (IOException e) {
+//        System.err.println("error during copying: "+ e.getMessage());
+//    } finally {
+//        try {
+//            if (br != null) br.close();
+//            if (bw != null) bw.close();
+//        } catch (IOException e) {
+//            System.err.println("error during closing: "+ e.getMessage());
+//        }
 //    }
 
 }
