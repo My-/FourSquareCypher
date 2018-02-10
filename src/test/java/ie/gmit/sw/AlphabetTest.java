@@ -10,49 +10,97 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AlphabetTest {
 
+    @Test
+    @DisplayName("Get position")
+    void object_test() {
+        String  abc = " ABCDEFGHIKLMNOPRSTUVWXYZ";
+        Alphabet abc1 = Alphabet.of(abc);
+        Alphabet abc2 = Alphabet.of();
+
+//        System.out.println(abc +" = \n"+ abc1 +" = \n"+ abc2);
+
+        assertAll(
+                ()-> assertEquals(abc, abc1.toString(), "vs custom string"),
+                ()-> assertEquals(abc, abc2.toString(), "vs default"),
+                ()-> assertEquals(abc1.toString(), abc2.toString(), "Custom vs default")
+        );
+    }
 
     @Test
     @DisplayName("Get position")
     void get() {
-        Alphabet abc = Alphabet.of();
-        Alphabet bca = Alphabet.of("QWERTYUIOPASDFGHJKLZXCVBNM");
+        String  abc = " ABCDEFGHIKLMNOPRSTUVWXYZ";
+        Alphabet abc1 = Alphabet.of();
+        Alphabet abc2 = Alphabet.of(abc);
 
-        assertAll(
-                ()-> assertEquals(Position.of(0,0), abc.get('A').get()),
-                ()-> assertEquals(Position.of(0,4), abc.get('E').get()),
-                ()-> assertEquals(Position.of(1,3), abc.get('I').get()),
-                ()-> assertEquals(Position.of(1,4), abc.get('K').get()),
-                ()-> assertEquals(Position.of(2,0), abc.get('L').get()),
-                ()-> assertEquals(Position.of(2,4), abc.get('P').get()),
-                ()-> assertEquals(Position.of(4,4), abc.get('Z').get()),
+        IntStream.range(0, 2).forEach(
+                it->{
+                    Alphabet a = it == 0 ? abc1 : abc2;
 
-                ()-> assertNotEquals(
-                        Position.of(2,2),
-                        abc.get('A').get(),
-                        "(2,2) != "+ abc.get('A').get()),
-                ()-> assertFalse( abc.get('J').isPresent() )
+                    assertAll(
+                            ()-> assertEquals(Position.of(0,0), a.get(' ').get(),
+                                    String.format("testing: %s", a)),
+                            ()-> assertEquals(Position.of(0,4), a.get('D').get(),
+                                    String.format("testing: %s", a)),
+                            ()-> assertEquals(Position.of(1,4), a.get('I').get(),
+                                    String.format("testing: %s", a)),
+                            ()-> assertEquals(Position.of(2,0), a.get('K').get(),
+                                    String.format("testing: %s", a)),
+                            ()-> assertEquals(Position.of(3,0), a.get('P').get(),
+                                    String.format("testing: %s", a)),
+                            ()-> assertEquals(Position.of(3,1), a.get('R').get(),
+                                    String.format("testing: %s", a)),
+                            ()-> assertEquals(Position.of(4,4), a.get('Z').get(),
+                                    String.format("testing: %s", a)),
+
+                            ()-> assertNotEquals(
+                                    Position.of(2,2),
+                                    a.get('A').get(),
+                                    "(2,2) != "+ a.get('A').get()),
+                            ()-> assertFalse( a.get('J').isPresent() )
+                    );
+
+                }
+
         );
+
+
     }
 
     @Test
     @DisplayName("Get letter")
     void get1() {
-        Alphabet abc = Alphabet.of();
+        String  abc = " ABCDEFGHIKLMNOPRSTUVWXYZ";
+        Alphabet abc1 = Alphabet.of();
+        Alphabet abc2 = Alphabet.of(abc);
 
         assertAll(
-                ()-> assertEquals('A', abc.get(Position.of(0,0))),
-                ()-> assertEquals('E', abc.get(Position.of(0,4))),
-                ()-> assertEquals('I', abc.get(Position.of(1,3))),
-                ()-> assertEquals('K', abc.get(Position.of(1,4))),
-                ()-> assertEquals('L', abc.get(Position.of(2,0))),
-                ()-> assertEquals('P', abc.get(Position.of(2,4))),
-                ()-> assertEquals('Z', abc.get(Position.of(4,4))),
-                ()-> assertEquals(' ', abc.get(Position.of(-1,4))),
-                ()-> assertEquals(' ', abc.get(Position.of(0,5))),
+                ()-> assertEquals(' ', abc1.get(Position.of(0,0))),
+                ()-> assertEquals('D', abc1.get(Position.of(0,4))),
+                ()-> assertEquals('H', abc1.get(Position.of(1,3))),
+                ()-> assertEquals('I', abc1.get(Position.of(1,4))),
+                ()-> assertEquals('K', abc1.get(Position.of(2,0))),
+                ()-> assertEquals('O', abc1.get(Position.of(2,4))),
+                ()-> assertEquals('Z', abc1.get(Position.of(4,4))),
 
                 ()-> {
                     int x = 2, y = 2; // 'H'
-                    assertFalse('Z' == abc.get(Position.of(x,y)), "Z != "+ abc.get(Position.of(x,y)));
+                    assertFalse('Z' == abc1.get(Position.of(x,y)), "Z != "+ abc1.get(Position.of(x,y)));
+                }
+        );
+
+        assertAll(
+                ()-> assertEquals(' ', abc2.get(Position.of(0,0))),
+                ()-> assertEquals('D', abc2.get(Position.of(0,4))),
+                ()-> assertEquals('H', abc2.get(Position.of(1,3))),
+                ()-> assertEquals('I', abc2.get(Position.of(1,4))),
+                ()-> assertEquals('K', abc2.get(Position.of(2,0))),
+                ()-> assertEquals('O', abc2.get(Position.of(2,4))),
+                ()-> assertEquals('Z', abc2.get(Position.of(4,4))),
+
+                ()-> {
+                    int x = 2, y = 2; // 'H'
+                    assertFalse('Z' == abc2.get(Position.of(x,y)), "Z != "+ abc2.get(Position.of(x,y)));
                 }
         );
     }

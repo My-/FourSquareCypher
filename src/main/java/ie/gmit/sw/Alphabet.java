@@ -10,7 +10,7 @@ import java.util.function.IntUnaryOperator;
 public class Alphabet implements CharacterKey{
 
     public static final int DEFAULT_LENGTH = 25;
-    public static final String STANDARD_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+//    public static final String STANDARD_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     /**
      * Flag to check if alphabet is standard;
@@ -36,7 +36,7 @@ public class Alphabet implements CharacterKey{
      * Constructor for creating standard alphabet.
      */
     private Alphabet(){
-        String str = (" "+ STANDARD_ALPHABET).replace("J", "").replace("Q", "");
+        String str = " ABCDEFGHIKLMNOPRSTUVWXYZ";
         this.alphabet = str.toCharArray();
 //        this.isStandard = true;
         this.matrixSize = (int)Math.sqrt(DEFAULT_LENGTH);
@@ -60,6 +60,9 @@ public class Alphabet implements CharacterKey{
 
         this.alphabet = str.toCharArray();
         this.matrixSize = sqNum;
+        for(int i = 0; i < this.alphabet.length; i++){
+            mapAlphabet.put(this.alphabet[i], Position.of(i / matrixSize, i % matrixSize));
+        }
     }
 
     /**
