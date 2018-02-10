@@ -32,6 +32,14 @@ class FourSquareCypherTest {
 
     @Test
     void incript() {
+        String  abc = " ABCDEFGHIKLMNOPRSTUVWXYZ";
+        String key1 = "GIVFWMCYZKUXTEP ABDHLNORS";
+        String key2 = "TFWXPSKEOULGNH ABCDIMRVYZ";
+        String testFile = "/text/PoblachtNaHEireann.txt";
+
+        FourSquareCypher cipher = FourSquareCypher.of(abc, key1, key2);
+
+
     }
 
     @Test

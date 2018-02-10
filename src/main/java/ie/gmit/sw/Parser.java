@@ -13,15 +13,16 @@ public class Parser {
 
     public Stream<String> fromFile(String fileName) throws Exception {
         Stream<String> R = Stream.empty();
-        URL url = getClass().getResource(fileName);
+//        URL url = getClass().getResource(fileName);
 
-        DataInputStream in = new DataInputStream(new FileInputStream(url.getPath()));
+        DataInputStream in = new DataInputStream(new FileInputStream(fileName));
+//        DataInputStream in = new DataInputStream(new FileInputStream(url.getPath()));
         R = new BufferedReader(new InputStreamReader(in)).lines();
 
-        // print files at url
-        try (Stream<Path> paths = Files.walk(Paths.get(url.getPath()))) {
-            paths.filter(Files::isRegularFile).forEach(System.out::println);
-        }
+//        // print files at url
+//        try (Stream<Path> paths = Files.walk(Paths.get(url.getPath()))) {
+//            paths.filter(Files::isRegularFile).forEach(System.out::println);
+//        }
 
 //        try (DataInputStream in = new DataInputStream(new FileInputStream(url.getPath())) ){
 //            R = new BufferedReader(new InputStreamReader(in)).lines();
@@ -29,9 +30,9 @@ public class Parser {
 
 
 
-        catch (Exception e) {
-            throw new Exception("[ERROR] Encountered a problem reading the dictionary. \n" + e.getMessage());
-        }
+//        catch (Exception e) {
+//            throw new Exception("[ERROR] Encountered a problem reading the dictionary. \n" + e.getMessage());
+//        }
 
         return R;
     }
