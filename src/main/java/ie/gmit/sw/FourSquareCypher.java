@@ -2,6 +2,7 @@ package ie.gmit.sw;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -78,16 +79,16 @@ public class FourSquareCypher {
     }
 
     public Stream<String> incript(Stream<String> stream){
-        return applyOn(stream, this::incript);
+        return applyOn(stream, this::incript, (Alphabet) this.alphabet);
     }
 
     public Stream<String> decript(Stream<String> stream){
-        return applyOn(stream, this::decript);
+        return applyOn(stream, this::decript, (Alphabet) this.alphabet);
     }
 
-    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation){
+    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation, Alphabet alphabet){
         return stream.map(
-                st -> Bigram.toBigrams(st).stream()
+                st -> Bigram.toBigrams(st, alphabet).stream()
                         .map(operation)
                         .map(Bigram::toString)
                         .collect(Collectors.joining()) );

@@ -36,9 +36,14 @@ public class Alphabet implements CharacterKey{
      * Constructor for creating standard alphabet.
      */
     private Alphabet(){
-        this.alphabet = STANDARD_ALPHABET.replace("J", "").toCharArray();
-        this.isStandard = true;
+        String str = (" "+ STANDARD_ALPHABET).replace("J", "").replace("Q", "");
+        this.alphabet = str.toCharArray();
+//        this.isStandard = true;
         this.matrixSize = (int)Math.sqrt(DEFAULT_LENGTH);
+
+        for(int i = 0; i < alphabet.length; i++){
+            mapAlphabet.put(alphabet[i], Position.of(i / matrixSize, i % matrixSize));
+        }
     }
 
     /**
@@ -167,6 +172,10 @@ public class Alphabet implements CharacterKey{
 
     public int getMatrixSize() {
         return matrixSize;
+    }
+
+    public boolean contains(char letter){
+        return this.mapAlphabet.containsKey(letter);
     }
 
     @Override

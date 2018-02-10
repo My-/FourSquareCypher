@@ -17,6 +17,7 @@ class MyUtilsTest {
                 ()->  IntStream.range(0, 10).forEach(it-> assertTrue(
                         s.add(MyUtils.createRandomCharacterString(10, MyUtils.noFilter, MyUtils.doNothing))))
         );
+        System.out.println(s);
     }
 
     @Test

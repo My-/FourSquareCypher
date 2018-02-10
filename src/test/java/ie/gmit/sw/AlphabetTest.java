@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AlphabetTest {
@@ -52,6 +54,23 @@ class AlphabetTest {
                     int x = 2, y = 2; // 'H'
                     assertFalse('Z' == abc.get(Position.of(x,y)), "Z != "+ abc.get(Position.of(x,y)));
                 }
+        );
+    }
+
+    @Test
+    void contains() {
+        Alphabet abc = Alphabet.of();
+        char[] chArr = abc.toString().toCharArray();
+        System.out.println(abc.toString());
+
+        assertAll(
+                ()-> IntStream.range(0, chArr.length)
+                        .forEach(it-> assertTrue(abc.contains(chArr[it]), "problem with: "+ chArr[it] +" "+ it)),
+                ()-> assertTrue(abc.contains('A')),
+                ()-> assertTrue(abc.contains('D')),
+                ()-> assertTrue(abc.contains('Z')),
+                ()-> assertTrue(abc.contains(' '))
+
         );
     }
 }

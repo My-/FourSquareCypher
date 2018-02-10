@@ -8,6 +8,8 @@ public class Bigram {
 
     private char[] bigram = new char[2];
 
+    private Bigram(){ }
+
     private Bigram(char ch0, char ch1) {
         this.bigram = new char[]{ch0, ch1};
     }
@@ -22,17 +24,42 @@ public class Bigram {
         return new Bigram(ch0, ch1);
     }
 
-    public static List<Bigram> toBigrams(String str){
+    public static List<Bigram> toBigrams(String str, Alphabet alphabet){
         char[] chArr = str.toCharArray();
-        int size = chArr.length % 2 == 0 ? chArr.length / 2 : chArr.length / 2 +1;
-        List<Bigram> R = new ArrayList<>(size);
+        List<Bigram> R = new ArrayList<>();
+        int bigramFilled = 0;
+        char[] tempBigram = new char[2];
 
-        for(int i = 0; i < chArr.length; i++){
-            if( i % 2 == 0 ){ R.add(Bigram.of(chArr[i], i +1 < chArr.length ? chArr[i +1] : ' ')) ; } // add space to end if string is odd length
+        for(int i = 0; i < chArr.length; i++){  // For each letter...
+
+            if( alphabet.contains(chArr[i]) ){  // if exist in alphabet...
+                 tempBigram[bigramFilled] = chArr[i];
+                 bigramFilled++;
+            }else if( alphabet.contains(Character.toUpperCase(chArr[i])) ){
+                tempBigram[bigramFilled] = Character.toUpperCase(chArr[i]);
+                bigramFilled++;
+            }else if( alphabet.contains(Character.toLowerCase(chArr[i])) ){
+                tempBigram[bigramFilled] = Character.toLowerCase(chArr[i]);
+                bigramFilled++;
+            }else{
+//                System.out.println("Letter not in alphabet: "+ chArr[i]);
+            }
+
+            if(bigramFilled > 1){          // if has two valid letters...
+                R.add(Bigram.of(tempBigram));
+                bigramFilled = 0;
+            }
+        }
+
+        if( bigramFilled == 1 ){   // if has one letter out of two...
+            tempBigram[bigramFilled] = ' ';  // ...add space
+            R.add(Bigram.of(tempBigram));
         }
 
         return R;
     }
+
+//    public static StringBuilder toStringBuilder()
 
     public char get(int n){
         if(0 > n || n > 1 ){ throw new IllegalArgumentException("Wrong parameter ("+ n +")"); }
@@ -41,6 +68,6 @@ public class Bigram {
 
     @Override
     public String toString() {
-        return "Bigram{" + Arrays.toString(bigram) +'}';
+        return String.valueOf(bigram);
     }
 }
