@@ -94,34 +94,35 @@ public class FourSquareCypher {
                         .collect(Collectors.joining()) );
     }
 
-    private Bigram incript(Bigram bigram){
-        return getFrom(bigram, key_one, key_two);
+    Bigram incript(Bigram bigram){
+        return getFrom(bigram, alphabet, alphabet, key_one, key_two);
     }
 
-    private Bigram decript(Bigram bigram){
-        return getFrom(bigram, alphabet, alphabet);
+    Bigram decript(Bigram bigram){
+        return getFrom(bigram, key_one, key_two, alphabet, alphabet);
     }
 
-    private Bigram getFrom(Bigram bigram, CharacterKey abc1, CharacterKey abc2){
-        Position[] pos = getPositions(bigram, abc1, abc2);
+    private Bigram getFrom(Bigram bigram, CharacterKey ch1_PosFrom, CharacterKey ch2_PosFrom, CharacterKey key1, CharacterKey key2){
+        Position[] pos = getPositions(bigram, ch1_PosFrom, ch2_PosFrom);
         int x1 = pos[0].X, y1 = pos[0].Y, x2 = pos[1].X, y2 = pos[1].Y;
-        char ch1 = abc1.get(Position.of(x1, y2));
-        char ch2 = abc2.get(Position.of(x2, y1));
+        char ch1 = key1.get(Position.of(x1, y2));
+        char ch2 = key2.get(Position.of(x2, y1));
 
         return Bigram.of(new char[]{ch1, ch2});
     }
 
     private static Position[] getPositions(Bigram bigram, CharacterKey abc1, CharacterKey abc2){
-        Position pos[] = new Position[2];
+        Position pos1, pos2;
+        char ch1 = bigram.get(0), ch2 = bigram.get(1);
 
-        if( abc1.get(bigram.get(0)).isPresent() && abc2.get(bigram.get(1)).isPresent() ){
-            pos[0] = abc1.get(bigram.get(0)).get();
-            pos[1] = abc2.get(bigram.get(1)).get();
+        if( abc1.get(ch1).isPresent() && abc2.get(ch2).isPresent() ){
+            pos1 = abc1.get(ch1).get();
+            pos2 = abc2.get(ch2).get();
         }else{
             throw new RuntimeException("Wrong Bigram: "+ bigram);
         }
 
-        return pos;
+        return new Position[]{pos1, pos2};
     }
 
     @Override

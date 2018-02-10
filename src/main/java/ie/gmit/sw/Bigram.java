@@ -3,15 +3,18 @@ package ie.gmit.sw;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Bigram {
 
-    private char[] bigram = new char[2];
+    private char ch1;
+    private char ch2;
 
     private Bigram(){ }
 
-    private Bigram(char ch0, char ch1) {
-        this.bigram = new char[]{ch0, ch1};
+    private Bigram(char ch1, char ch2) {
+        this.ch1 = ch1;
+        this.ch2 = ch2;
     }
 
     public static Bigram of(Bigram bigram){
@@ -63,11 +66,25 @@ public class Bigram {
 
     public char get(int n){
         if(0 > n || n > 1 ){ throw new IllegalArgumentException("Wrong parameter ("+ n +")"); }
-        return this.bigram[n];
+        return n == 0 ? this.ch1 : this.ch2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bigram bigram = (Bigram) o;
+        return ch1 == bigram.ch1 &&
+                ch2 == bigram.ch2;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ch1, ch2);
     }
 
     @Override
     public String toString() {
-        return String.valueOf(bigram);
+        return ch1+""+ch2;
     }
 }

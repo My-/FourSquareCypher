@@ -31,18 +31,23 @@ class FourSquareCypherTest {
     }
 
     @Test
-    void incript() {
+    void incript_Bigram() {
         String  abc = " ABCDEFGHIKLMNOPRSTUVWXYZ";
         String key1 = "GIVFWMCYZKUXTEP ABDHLNORS";
         String key2 = "TFWXPSKEOULGNH ABCDIMRVYZ";
         String testFile = "/text/PoblachtNaHEireann.txt";
 
-        FourSquareCypher cipher = FourSquareCypher.of(abc, key1, key2);
+        FourSquareCypher cipher = FourSquareCypher.of( key1, key2, abc);
+
+        assertAll(
+                ()-> assertEquals(Bigram.of('V', 'F'), cipher.incript(Bigram.of('A', 'B')), "Encrypt"),
+                ()-> assertEquals(Bigram.of('A', 'B'), cipher.decript(Bigram.of('V', 'F')), "Decrypt")
+        );
 
 
     }
 
     @Test
-    void decript() {
+    void decript_Bigram() {
     }
 }
