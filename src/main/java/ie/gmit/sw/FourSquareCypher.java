@@ -100,11 +100,15 @@ public class FourSquareCypher {
     }
 
     public Stream<String> incript(Stream<String> stream){
-        return applyOn(stream, this::incript, this::refactor);
+        return applyOn(
+                stream.map(this::refactor)
+                        .map(line-> MyUtils.splitStringEvery(line, 2))
+                        .flatMap(Arrays::stream),
+                this::incript);
     }
 
     public Stream<String> decript(Stream<String> stream){
-        return applyOn(stream, this::decript, it->it);
+        return applyOn(stream, this::decript);
     }
 
 //    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation, Alphabet alphabet){
@@ -116,13 +120,8 @@ public class FourSquareCypher {
 //    }
 
     // http://www.oracle.com/technetwork/articles/java/architect-streams-pt2-2227132.html
-    public static Stream<String> applyOn(Stream<String> stream,
-                                         UnaryOperator<Bigram> operation,
-                                         UnaryOperator<String> prepareBeforeSplit){
+    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation){
         return stream
-                .map(prepareBeforeSplit)
-                .map(line-> MyUtils.splitStringEvery(line, 2))
-                .flatMap(Arrays::stream)
                 .map(Bigram::of)
                 .map(operation)
                 .map(Bigram::toString);
