@@ -2,6 +2,8 @@ package ie.gmit.sw;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -17,13 +19,15 @@ public class Runner {
         String key2 = "TFWXPSKEOULGNH ABCDIMRVYZ";
         String path = "/mnt/storage/Git-Hub/FourSquareCypher/out/production/FourSquareCypher";
 //        String path = new Runner().getClass().getResource("/").toString();
-        String fileSource = path +"/text/WarAndPeace-LeoTolstoy10.txt";
+        String fileSource = path +"/text/WarAndPeace-LeoTolstoy.txt";
         String fileEncrypted = path +"/text/encrypted.txt";
         String fileDecrypted = path +"/text/decrypted.txt";
 
-        FourSquareCypher cipher = FourSquareCypher.of(key1, key2, abc);
+        FourSquareCypher cipher = FourSquareCypher.of();
+//        FourSquareCypher cipher = FourSquareCypher.of(key1, key2, abc);
         Stream<String> streamToEncrypt = new Parser().fromFile(fileSource);
 
+        System.out.println(cipher.toString());
         System.out.println("Starting encryption...");
 
         Files.write(Paths.get(fileEncrypted),
@@ -40,10 +44,7 @@ public class Runner {
         end = System.nanoTime();
         System.out.println("Decryption done in: "+ (end -encrypt));
         System.out.println("Total time: "+ (end -start));
-        int sec = (int)((end -start) / 1_000_000_000);
-        int mils = (int)(((end -start) -sec * 1_000_000_000L) / 1_000_000L);
-
-        System.out.println( sec +"."+ mils +" s");
+        System.out.println(String.format("Running time: %.3f sec", (end -start) /1_000_000_000f));
     }
 
 

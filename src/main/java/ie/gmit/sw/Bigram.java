@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Bigram {
 
@@ -23,44 +27,64 @@ public class Bigram {
     public static Bigram of(char[] charr){
         return new Bigram(charr[0], charr[1]);
     }
-    public static Bigram of(char ch0, char ch1){
-        return new Bigram(ch0, ch1);
+    public static Bigram of(char ch1, char ch2){
+        return new Bigram(ch1, ch2);
+    }
+    public static Bigram of(char ch){
+        return new Bigram(ch, ' ');
+    }
+    public static Bigram of(String str){
+        if( str.length() > 2 ){ throw new IllegalArgumentException("Given string is longer then 2 characters: "+ str); }
+        if( str.length() == 0 ){ return Bigram.of(' ', ' '); }
+        return str.length() == 2 ? new Bigram(str.charAt(0), str.charAt(1)) : new Bigram(str.charAt(0), ' ');
     }
 
     public static List<Bigram> toBigrams(String str, Alphabet alphabet){
-        char[] chArr = str.toCharArray();
+        char[] chArr = prepare(str).toCharArray();
         List<Bigram> R = new ArrayList<>();
-        int bigramFilled = 0;
-        char[] tempBigram = new char[2];
 
-        for(int i = 0; i < chArr.length; i++){  // For each letter...
-
-            if( alphabet.contains(chArr[i]) ){  // if exist in alphabet...
-                 tempBigram[bigramFilled] = chArr[i];
-                 bigramFilled++;
-            }else if( alphabet.contains(Character.toUpperCase(chArr[i])) ){
-                tempBigram[bigramFilled] = Character.toUpperCase(chArr[i]);
-                bigramFilled++;
-            }else if( alphabet.contains(Character.toLowerCase(chArr[i])) ){
-                tempBigram[bigramFilled] = Character.toLowerCase(chArr[i]);
-                bigramFilled++;
-            }else{
-//                System.out.println("Letter not in alphabet: "+ chArr[i]);
-            }
-
-            if(bigramFilled > 1){          // if has two valid letters...
-                R.add(Bigram.of(tempBigram));
-                bigramFilled = 0;
-            }
+        for(int i = 1; i < chArr.length; i+=2){  // create bigrams
+            R.add(Bigram.of(chArr[i -1], chArr[i]));
         }
 
-        if( bigramFilled == 1 ){   // if has one letter out of two...
-            tempBigram[bigramFilled] = ' ';  // ...add space
-            R.add(Bigram.of(tempBigram));
+        if( chArr.length % 2 != 0 ){   // if one letter has no pair
+            R.add(Bigram.of(chArr[chArr.length -1], ' '));  // ...add space
         }
 
         return R;
     }
+
+    static Stream<Bigram> toBigrams(IntStream codePoints,
+                                    IntPredicate filter,
+                                    IntUnaryOperator mapper){
+
+        final MutableCharacter ch = MutableCharacter.of();
+        final MutableBool firsElement = MutableBool.of();
+
+        return codePoints
+                .filter(it->{
+                    if( firsElement.get() ){ ch.changeTo((char)it); firsElement.changeTo(false); return false; }
+                    firsElement.changeTo(true); return true;
+                })
+                .filter(filter)
+                .map(mapper)
+//                .
+                .mapToObj(it-> Bigram.of(ch.get(), (char)it));
+    }
+
+    static String prepare(String str){
+        return str.codePoints()
+                .filter(MyUtils.lettersOnly.or(Character::isSpaceChar))
+                .map(Character::toUpperCase)
+                .map(MyUtils.replace_J_To_I)
+                .map(MyUtils.replace_Q_To_K)
+                .mapToObj(MyUtils.toCharacter)
+                .collect(Collectors.joining());
+    }
+
+
+
+
 
 //    public static StringBuilder toStringBuilder()
 

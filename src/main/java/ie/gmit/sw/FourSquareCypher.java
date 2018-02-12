@@ -1,16 +1,18 @@
 package ie.gmit.sw;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class FourSquareCypher {
 
-    private CharacterKey alphabet;
+    private Alphabet alphabet;
     private CharacterKey key_one;
     private CharacterKey key_two;
 
@@ -78,20 +80,52 @@ public class FourSquareCypher {
         return cypher;
     }
 
+     String refactor(String s){
+        // v1
+//        return s.toUpperCase()
+//                .replaceAll("J" , "I")
+//                .replaceAll("Q", "K")
+//                .replaceAll("\\p{Punct}", "")
+//                .replaceAll("\\p{Digit}", ""); // http://www.regular-expressions.info/posixbrackets.html
+
+         // v2 faster 0.4 sec
+         StringBuilder sb = new StringBuilder(s.toUpperCase());
+
+         int length = s.length() -1;
+         for(int i = length; i >= 0; i-- ){
+            if( this.alphabet.contains(sb.charAt(i)) ){ continue; }
+            sb.deleteCharAt(i);
+         }
+         return sb.toString();
+    }
+
     public Stream<String> incript(Stream<String> stream){
-        return applyOn(stream, this::incript, (Alphabet) this.alphabet);
+        return applyOn(stream, this::incript, this::refactor);
     }
 
     public Stream<String> decript(Stream<String> stream){
-        return applyOn(stream, this::decript, (Alphabet) this.alphabet);
+        return applyOn(stream, this::decript, it->it);
     }
 
-    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation, Alphabet alphabet){
-        return stream.map(
-                st -> Bigram.toBigrams(st, alphabet).stream()
-                        .map(operation)
-                        .map(Bigram::toString)
-                        .collect(Collectors.joining()) );
+//    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation, Alphabet alphabet){
+//        return stream.map(
+//                st -> Bigram.toBigrams(st, alphabet).stream()
+//                        .map(operation)
+//                        .map(Bigram::toString)
+//                        .collect(Collectors.joining()) );
+//    }
+
+    // http://www.oracle.com/technetwork/articles/java/architect-streams-pt2-2227132.html
+    public static Stream<String> applyOn(Stream<String> stream,
+                                         UnaryOperator<Bigram> operation,
+                                         UnaryOperator<String> prepareBeforeSplit){
+        return stream
+                .map(prepareBeforeSplit)
+                .map(line-> MyUtils.splitStringEvery(line, 2))
+                .flatMap(Arrays::stream)
+                .map(Bigram::of)
+                .map(operation)
+                .map(Bigram::toString);
     }
 
     Bigram incript(Bigram bigram){

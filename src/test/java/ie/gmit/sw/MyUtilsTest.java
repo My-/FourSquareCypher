@@ -17,7 +17,16 @@ class MyUtilsTest {
                 ()->  IntStream.range(0, 10).forEach(it-> assertTrue(
                         s.add(MyUtils.createRandomCharacterString(10, MyUtils.noFilter, MyUtils.doNothing))))
         );
-        System.out.println(s);
+//        System.out.println(s);
+
+        long start = System.nanoTime();
+
+        for(int i = 1_000_000; i > 0; i--){
+//            System.out.println(i);
+            MyUtils.createRandomCharacterString(50, it-> true, it-> it);
+        }
+
+        System.out.println(String.format("Running time: %.3f", (System.nanoTime() -start) /1_000_000_000f));
     }
 
     @Test
