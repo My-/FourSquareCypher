@@ -1,7 +1,9 @@
 package ie.gmit.sw;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -15,6 +17,9 @@ public class FourSquareCypher {
     private Alphabet alphabet;
     private CharacterKey key_one;
     private CharacterKey key_two;
+    private Map<Bigram, Bigram> bigramPool = new HashMap<>();
+
+//    private
 
 
     /**
@@ -128,20 +133,24 @@ public class FourSquareCypher {
     }
 
     Bigram incript(Bigram bigram){
-        return getFrom(bigram, alphabet, alphabet, key_one, key_two);
+        if( bigramPool.containsKey(bigram)){ return bigramPool.get(bigram); }
+        Bigram b = getFrom(bigram, alphabet, alphabet, key_one, key_two);
+        bigramPool.put(bigram, b);
+        return b;
     }
 
     Bigram decript(Bigram bigram){
+
         return getFrom(bigram, key_one, key_two, alphabet, alphabet);
     }
 
     private Bigram getFrom(Bigram bigram, CharacterKey ch1_PosFrom, CharacterKey ch2_PosFrom, CharacterKey key1, CharacterKey key2){
         Position[] pos = getPositions(bigram, ch1_PosFrom, ch2_PosFrom);
-        int x1 = pos[0].X, y1 = pos[0].Y, x2 = pos[1].X, y2 = pos[1].Y;
+        int x1 = pos[0].getX(), y1 = pos[0].getY(), x2 = pos[1].getX(), y2 = pos[1].getY();
         char ch1 = key1.get(Position.of(x1, y2));
         char ch2 = key2.get(Position.of(x2, y1));
 
-        return Bigram.of(new char[]{ch1, ch2});
+        return Bigram.of(ch1, ch2);
     }
 
     private static Position[] getPositions(Bigram bigram, CharacterKey abc1, CharacterKey abc2){

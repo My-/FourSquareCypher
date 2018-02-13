@@ -45,4 +45,39 @@ class CrypticKeyTest {
         );
     }
 
+    @Test
+    @DisplayName("char Speed")
+    void get_letter_speed() {
+        int i = Integer.MAX_VALUE;
+        CrypticKey ck = CrypticKey.of();
+        long start = System.nanoTime();
+
+        while(--i > 0){
+            int x = i % 5, y = i%5;
+//            ck.get(x, y);
+            ck.get(Position.of(x,y));
+        }
+
+        long end = System.nanoTime();
+        System.out.println("Total time: "+ (end -start));
+        System.out.println(String.format("Running time: %.3f sec", (end -start) /1_000_000_000f));
+    }
+
+    @Test
+    @DisplayName("position speed")
+    void get_position_speed() {
+        int i = Integer.MAX_VALUE;
+        CrypticKey ck = CrypticKey.of();
+        long start = System.nanoTime();
+
+        while(--i > 0){
+            char ch = (char)(i%8 +65);
+            ck.get(ch);
+        }
+
+        long end = System.nanoTime();
+        System.out.println("Total time: "+ (end -start));
+        System.out.println(String.format("Running time: %.3f sec", (end -start) /1_000_000_000f));
+    }
+
 }

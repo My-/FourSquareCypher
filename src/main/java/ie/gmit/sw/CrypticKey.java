@@ -6,7 +6,8 @@ import java.util.function.IntUnaryOperator;
 
 public class CrypticKey implements CharacterKey{
 
-    private Map<Character, Position> mapKey = Collections.synchronizedMap(new HashMap<>(25));
+//    private Map<Character, Position> mapKey = Collections.synchronizedMap(new HashMap<>(25));
+    private Map<Character, Position> mapKey = new HashMap<>();
     private char[] charKey;
     private int matrixSize;
 
@@ -59,7 +60,13 @@ public class CrypticKey implements CharacterKey{
      */
     @Override
     public char get(Position position){
-        int i = position.X * matrixSize + position.Y;
+        int i = position.getX() * matrixSize + position.getY();
+        return  this.charKey[i];
+    }
+
+
+    public char get(int x, int y){
+        int i = x * matrixSize + y;
         return  this.charKey[i];
     }
 

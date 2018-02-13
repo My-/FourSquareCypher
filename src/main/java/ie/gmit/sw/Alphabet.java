@@ -107,7 +107,7 @@ public class Alphabet implements CharacterKey{
     public char get(Position position){
         if(isStandard){ return Alphabet.getFromStandard(position); }
 
-        int i = position.X * (int)Math.sqrt(alphabet.length) +position.Y;
+        int i = position.getX() * (int)Math.sqrt(alphabet.length) +position.getY();
         return this.alphabet[i];
     }
 
@@ -128,7 +128,7 @@ public class Alphabet implements CharacterKey{
      * @return letter from matrix at position (x,y) or "space" if not valid X or Y.
      */
     static char getFromStandard(Position position){
-        int x = position.X, y = position.Y;
+        int x = position.getX(), y = position.getY();
         if(0 > x || x > 4 || 0 > y || y > 4){ return ' '; } // if X or Y are off limits
         return (char)(5 * x + y + 'A' + (x > 1 || x == 1 && y == 4 ? 1 : 0));
     }
@@ -171,6 +171,14 @@ public class Alphabet implements CharacterKey{
 
         ch -= 'A' + (ch > 'J' ? 1 : 0);
         return Optional.of( Position.of(ch / 5, ch % 5) );
+    }
+
+    public int length(){
+        return alphabet.length;
+    }
+
+    public char get(int index){
+        return alphabet[index];
     }
 
     public int getMatrixSize() {
