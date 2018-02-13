@@ -1,9 +1,6 @@
 package ie.gmit.sw;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -13,6 +10,8 @@ public class Bigram {
 
     private char ch1;
     private char ch2;
+
+    private static Map<Bigram, Bigram> pool = new HashMap<>();
 
     private Bigram(){ }
 
@@ -39,7 +38,9 @@ public class Bigram {
         return str.length() == 2 ? new Bigram(str.charAt(0), str.charAt(1)) : new Bigram(str.charAt(0), ' ');
     }
 
-    public static List<Bigram> toBigrams(String str, Alphabet alphabet){
+
+
+    public static List<Bigram> toBigrams(String str){
         char[] chArr = prepare(str).toCharArray();
         List<Bigram> R = new ArrayList<>();
 
@@ -72,6 +73,8 @@ public class Bigram {
                 .mapToObj(it-> Bigram.of(ch.get(), (char)it));
     }
 
+
+
     static String prepare(String str){
         return str.codePoints()
                 .filter(MyUtils.lettersOnly.or(Character::isSpaceChar))
@@ -83,7 +86,23 @@ public class Bigram {
     }
 
 
+    public static String joining(Stream<Bigram> bigrams){
+        return bigrams
+                .map(Bigram::toString)
+                .collect(Collectors.joining());
+    }
 
+
+
+
+    private void createPool(Alphabet abc, int posCh1, int posCh2){
+        if( posCh1 == abc.length() || posCh2 == abc.length() ){ return; }
+
+        pool.put(Bigram.of(abc.get(posCh1)), Bigram.of(abc.get(posCh2)));
+        createPool(abc, posCh1 +1, posCh2);
+        createPool(abc, posCh1 , posCh2 +1);
+
+    }
 
 
 //    public static StringBuilder toStringBuilder()
@@ -110,5 +129,13 @@ public class Bigram {
     @Override
     public String toString() {
         return ch1+""+ch2;
+    }
+
+    public StringBuffer toStringBuffer() {
+        return new StringBuffer(ch1+""+ch2);
+    }
+
+    public StringBuilder toStringBuilder() {
+        return new StringBuilder(ch1+""+ch2);
     }
 }

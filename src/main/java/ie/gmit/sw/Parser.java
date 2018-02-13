@@ -15,24 +15,25 @@ public class Parser {
         Stream<String> R = Stream.empty();
 //        URL url = getClass().getResource(fileName);
 
-        DataInputStream in = new DataInputStream(new FileInputStream(fileName));
+//        DataInputStream in = new DataInputStream(new FileInputStream(fileName));
 //        DataInputStream in = new DataInputStream(new FileInputStream(url.getPath()));
-        R = new BufferedReader(new InputStreamReader(in)).lines();
+//        R = new BufferedReader(new InputStreamReader(in)).lines();
 
 //        // print files at url
 //        try (Stream<Path> paths = Files.walk(Paths.get(url.getPath()))) {
 //            paths.filter(Files::isRegularFile).forEach(System.out::println);
 //        }
 
+        try (DataInputStream in = new DataInputStream(new FileInputStream(fileName)) ){
 //        try (DataInputStream in = new DataInputStream(new FileInputStream(url.getPath())) ){
-//            R = new BufferedReader(new InputStreamReader(in)).lines();
-//        }
+            R = new BufferedReader(new InputStreamReader(in)).lines();
+        }
 
 
 
-//        catch (Exception e) {
-//            throw new Exception("[ERROR] Encountered a problem reading the dictionary. \n" + e.getMessage());
-//        }
+        catch (Exception e) {
+            throw new Exception("[ERROR] Encountered a problem reading the dictionary. \n" + e.getMessage());
+        }
 
         return R;
     }

@@ -39,7 +39,7 @@ public class Runner {
         try (DataInputStream in = new DataInputStream(new FileInputStream(fileSource)) ){
             Stream<String> streamToEncrypt = new BufferedReader(new InputStreamReader(in)).lines();
             Files.write(Paths.get(fileEncrypted),
-                    (Iterable<String>) cipher.incript(streamToEncrypt)::iterator);
+                    (Iterable<String>) cipher.encrypt(streamToEncrypt)::iterator);
         }
 
 //        Files.write(Paths.get(fileEncrypted),
@@ -51,7 +51,7 @@ public class Runner {
         try (DataInputStream in = new DataInputStream(new FileInputStream(fileEncrypted)) ){
             Stream<String> streamToEncrypt = new BufferedReader(new InputStreamReader(in)).lines();
             Files.write(Paths.get(fileDecrypted),
-                    (Iterable<String>) cipher.decript(streamToEncrypt)::iterator);
+                    (Iterable<String>) cipher.decrypt(streamToEncrypt)::iterator);
         }
 
 //        Stream<String> streamToDecrypt = new Parser().fromFile(fileEncrypted);

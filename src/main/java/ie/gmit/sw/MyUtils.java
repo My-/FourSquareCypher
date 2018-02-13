@@ -85,13 +85,7 @@ public class MyUtils {
                 .toString();
     }
 
-    /**
-     *
-     * @param str
-     * @param filter
-     * @param mapper
-     * @return
-     */
+
     static String modifyString(String string,
                                IntPredicate filter,
                                IntUnaryOperator mapper){
@@ -162,6 +156,4 @@ public class MyUtils {
                 .map(line-> MyUtils.splitStringEvery(line, interval))
                 .flatMap(Arrays::stream);
     }
-
-
 }

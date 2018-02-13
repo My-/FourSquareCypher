@@ -104,16 +104,20 @@ public class FourSquareCypher {
          return sb.toString();
     }
 
-    public Stream<String> incript(Stream<String> stream){
+    public Stream<String> encrypt(Stream<String> stream){
         return applyOn(
                 stream.map(this::refactor)
-                        .map(line-> MyUtils.splitStringEvery(line, 2))
-                        .flatMap(Arrays::stream),
-                this::incript);
+//                        .map(line-> MyUtils.splitStringEvery(line, 2))
+//                        .flatMap(Arrays::stream)
+//                        .map(Bigram::toBigrams)
+//                        .flatMap(bigrams -> bigrams.stream().map(Bigram::toString))
+
+                ,
+                this::encrypt);
     }
 
-    public Stream<String> decript(Stream<String> stream){
-        return applyOn(stream, this::decript);
+    public Stream<String> decrypt(Stream<String> stream){
+        return applyOn(stream, this::decrypt);
     }
 
 //    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation, Alphabet alphabet){
@@ -125,21 +129,34 @@ public class FourSquareCypher {
 //    }
 
     // http://www.oracle.com/technetwork/articles/java/architect-streams-pt2-2227132.html
+//    public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation){
+//        return stream
+//                .map(Bigram::of)
+//                .map(operation)
+//                .map(Bigram::toString);
+//    }
+
     public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation){
         return stream
-                .map(Bigram::of)
-                .map(operation)
-                .map(Bigram::toString);
+                .map(Bigram::toBigrams)
+                .map(bigrams -> bigrams.stream()
+                        .map(operation))
+                .map(Bigram::joining);
+
+
+//                .map(Bigram::of)
+//                .map(operation)
+//                .map(Bigram::toString);
     }
 
-    Bigram incript(Bigram bigram){
+    Bigram encrypt(Bigram bigram){
         if( bigramPool.containsKey(bigram)){ return bigramPool.get(bigram); }
         Bigram b = getFrom(bigram, alphabet, alphabet, key_one, key_two);
         bigramPool.put(bigram, b);
         return b;
     }
 
-    Bigram decript(Bigram bigram){
+    Bigram decrypt(Bigram bigram){
 
         return getFrom(bigram, key_one, key_two, alphabet, alphabet);
     }
