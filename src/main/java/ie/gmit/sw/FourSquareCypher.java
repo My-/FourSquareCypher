@@ -139,8 +139,7 @@ public class FourSquareCypher {
     public static Stream<String> applyOn(Stream<String> stream, UnaryOperator<Bigram> operation){
         return stream
                 .map(Bigram::toBigrams)
-                .map(bigrams -> bigrams.stream()
-                        .map(operation))
+                .map(bigrams -> bigrams.stream().map(operation)) // stream inside the stream
                 .map(Bigram::joining);
 
 

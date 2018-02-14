@@ -62,14 +62,15 @@ class FourSquareCypherTest {
         FourSquareCypher cipher = FourSquareCypher.of( key1, key2, abc);
         long start = System.nanoTime();
 
-        IntStream.range(0, 10_000_000)//Integer.MAX_VALUE)
+        IntStream.range(0, 30_000_000)//Integer.MAX_VALUE)
                 .mapToObj(it-> Bigram.of((char)(rn.nextInt(8) +'A'), (char)(rn.nextInt(8) +'A')))
                 .map(cipher::encrypt)
 //                .map(Bigram::toString)
 //                .map(Bigram::of)
                 .map(cipher::decrypt)
 //                .map(Bigram::toString)
-                .collect(Collectors.toList());
+//                .collect(Collectors.toList());
+                .forEach(it->{});
 
         long end = System.nanoTime();
         System.out.println(" Total time: "+ (end -start));

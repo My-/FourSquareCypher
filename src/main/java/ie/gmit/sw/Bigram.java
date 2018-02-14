@@ -8,16 +8,18 @@ import java.util.stream.Stream;
 
 public class Bigram {
 
-    private char ch1;
-    private char ch2;
+//    private char ch1;
+//    private char ch2;
+    private char[] bigram;
 
     private static Map<Bigram, Bigram> pool = new HashMap<>();
 
     private Bigram(){ }
 
     private Bigram(char ch1, char ch2) {
-        this.ch1 = ch1;
-        this.ch2 = ch2;
+//        this.ch1 = ch1;
+//        this.ch2 = ch2;
+        bigram = new char[]{ch1, ch2};
     }
 
     public static Bigram of(Bigram bigram){
@@ -109,33 +111,34 @@ public class Bigram {
 
     public char get(int n){
         if(0 > n || n > 1 ){ throw new IllegalArgumentException("Wrong parameter ("+ n +")"); }
-        return n == 0 ? this.ch1 : this.ch2;
+        return bigram[n]; // n == 0 ? this.ch1 : this.ch2;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Bigram bigram = (Bigram) o;
-        return ch1 == bigram.ch1 &&
-                ch2 == bigram.ch2;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ch1, ch2);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Bigram bigram = (Bigram) o;
+//        return ch1 == bigram.ch1 &&
+//                ch2 == bigram.ch2;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(ch1, ch2);
+//    }
 
     @Override
     public String toString() {
-        return ch1+""+ch2;
+//        return ch1+""+ch2;
+        return String.valueOf(bigram);
     }
 
-    public StringBuffer toStringBuffer() {
-        return new StringBuffer(ch1+""+ch2);
-    }
-
-    public StringBuilder toStringBuilder() {
-        return new StringBuilder(ch1+""+ch2);
-    }
+//    public StringBuffer toStringBuffer() {
+//        return new StringBuffer(ch1+""+ch2);
+//    }
+//
+//    public StringBuilder toStringBuilder() {
+//        return new StringBuilder(ch1+""+ch2);
+//    }
 }
