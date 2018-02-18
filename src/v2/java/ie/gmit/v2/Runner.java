@@ -1,4 +1,4 @@
-package ie.gmit.sw;
+package ie.gmit.v2;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -6,23 +6,19 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
- * https://en.wikipedia.org/wiki/Four-square_cipher
- */
 public class Runner {
-    public static void main(String...args) throws Exception {
-
+    public static void main(String[] args)  throws Exception{
         long start = System.nanoTime(), end, encrypt;
 
         String  abc = " ABCDEFGHIKLMNOPRSTUVWXYZ";
         String key1 = "GIVFWMCYZKUXTEP ABDHLNORS";
         String key2 = "TFWXPSKEOULGNH ABCDIMRVYZ";
-//        String path = "/tmp/ramdisk";
-        String path = "/mnt/storage/Git-Hub/FourSquareCypher/out/production/FourSquareCypher";
+        String path = "/tmp/ramdisk";
+//        String path = "/mnt/storage/Git-Hub/FourSquareCypher/out/production/FourSquareCypher";
 //        String path = new Runner().getClass().getResource("/").toString();
         String fileSource = path +"/text/WarAndPeace-LeoTolstoy10.txt";
         String fileEncrypted = path +"/text/encrypted.txt";
@@ -33,13 +29,19 @@ public class Runner {
 //        Stream<String> streamToEncrypt = new Parser().fromFile(fileSource);
 
 
-        System.out.println(cipher.toString());
+//        System.out.println(cipher.toString());
         System.out.println("Starting encryption...");
 
+
         try (DataInputStream in = new DataInputStream(new FileInputStream(fileSource)) ){
-            Stream<String> streamToEncrypt = new BufferedReader(new InputStreamReader(in)).lines();
+            Stream<String> streamToEncrypt =
+                    new BufferedReader(new InputStreamReader(in))
+                            .lines()
+
+                    ;
+
             Files.write(Paths.get(fileEncrypted),
-                    (Iterable<String>) cipher.encrypt(streamToEncrypt)::iterator);
+                    (Iterable<String>) streamToEncrypt::iterator);
         }
 
 //        Files.write(Paths.get(fileEncrypted),
@@ -51,19 +53,13 @@ public class Runner {
         try (DataInputStream in = new DataInputStream(new FileInputStream(fileEncrypted)) ){
             Stream<String> streamToEncrypt = new BufferedReader(new InputStreamReader(in)).lines();
             Files.write(Paths.get(fileDecrypted),
-                    (Iterable<String>) cipher.decrypt(streamToEncrypt)::iterator);
+                    (Iterable<String>) streamToEncrypt::iterator);
         }
 
-//        Stream<String> streamToDecrypt = new Parser().fromFile(fileEncrypted);
-//
-//        Files.write(Paths.get(fileDecrypted),
-//                (Iterable<String>) cipher.decript(streamToDecrypt)::iterator);
 
         end = System.nanoTime();
         System.out.println("Decryption done in: "+ (end -encrypt));
         System.out.println("Total time: "+ (end -start));
         System.out.println(String.format("Running time: %.3f sec", (end -start) /1_000_000_000f));
     }
-
-
 }

@@ -21,4 +21,14 @@ public class MutableBool {
         this.b = b;
         return this;
     }
+
+    public boolean getThenTogle(){
+        this.b = !b;
+        return !b;
+    }
+
+    public boolean togle(){
+        this.b = !b;
+        return b;
+    }
 }

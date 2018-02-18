@@ -1,7 +1,9 @@
 package ie.gmit.sw;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -16,6 +18,7 @@ public class MyUtils {
     public static final IntUnaryOperator doNothing = it -> it;
     public static final IntUnaryOperator replace_J_To_I = it -> it == 'J' || it == 'j' ? it +1 : it; // j +1 = i
     public static final IntUnaryOperator replace_Q_To_K = it -> it == 'Q' || it == 'q' ? it -6 : it; // q -6 = k
+    public static final IntUnaryOperator replace_J_Q_To_I_K = replace_J_To_I.andThen(replace_Q_To_K);
 
 
     public static final IntPredicate noFilter = it -> true;
@@ -38,7 +41,7 @@ public class MyUtils {
     }
 
 
-    static String createRandomCharacterString(int length,
+    public static String createRandomCharacterString(int length,
                                               IntPredicate filter,
                                               IntUnaryOperator mapper){
         return new Random(System.nanoTime())
@@ -70,7 +73,7 @@ public class MyUtils {
      * @param str2 will be used to fill missing letters in keyword (order it appears matters).
      * @return unique character string.
      */
-    static String createUniqueString(String str1,
+    public static String createUniqueString(String str1,
                                      String str2,
                                      IntPredicate filter,
                                      IntUnaryOperator mapper ){
@@ -86,14 +89,14 @@ public class MyUtils {
     }
 
 
-    static String modifyString(String string,
+    public static String modifyString(String string,
                                IntPredicate filter,
                                IntUnaryOperator mapper){
 
         return modifyString(string, filter, mapper, it-> true, it-> it);
     }
 
-    static String modifyString(String string,
+    public static String modifyString(String string,
                                IntPredicate filter1,
                                IntUnaryOperator mapper1,
                                IntPredicate filter2,
@@ -155,5 +158,41 @@ public class MyUtils {
                 .map(mapperBeforeSplit)
                 .map(line-> MyUtils.splitStringEvery(line, interval))
                 .flatMap(Arrays::stream);
+    }
+
+
+    public static char[] copyfrom(final Set<Character> set, final int startAt, final int elements){
+        int lastIndex = startAt +elements;
+        char[] tmpArr = new char[elements];
+        int i = startAt;
+
+        if( set.size() < lastIndex ){
+            throw new IllegalArgumentException("Here is not enough elements in set: "+ set.size());
+        }
+
+        for( char ch : set ){
+            tmpArr[i++] = ch;
+        }
+
+        return tmpArr;
+    }
+
+    public static char[] uniqueSquareVector(char[] charArr, boolean strictMode){
+        Set<Character> uniqueABC = new LinkedHashSet<>();
+
+        for(char ch : charArr){
+            if( uniqueABC.add(ch) && strictMode ) {
+                throw new IllegalArgumentException(String.format(
+                        "Given characters has duplicates!\n\t(%c) in [%s]", ch, String.valueOf(charArr)));
+            }
+        }
+
+        int sqrLength = (int)Math.sqrt(uniqueABC.size());
+
+        if( uniqueABC.size() % sqrLength != 0 && strictMode ){
+            throw new IllegalArgumentException("Given characters can NOT be square matrix/vector!");
+        }
+
+        return MyUtils.copyfrom(uniqueABC, 0, sqrLength * sqrLength);
     }
 }
