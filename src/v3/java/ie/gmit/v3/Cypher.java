@@ -69,6 +69,11 @@ public class Cypher {
             char[] chArr = encrypt(ch1, ch2);
             sb.append(chArr);
         }
+
+        if(limit % 2 != 0){
+            char[] chArr = encrypt(s.charAt(s.length() -1), ' ');
+            sb.append(chArr);
+        }
         
         return sb.toString();
     }
@@ -83,10 +88,7 @@ public class Cypher {
             sb.append(chArr);
         }
 
-        if(limit % 2 != 0){
-            char[] chArr = decrypt(s.charAt(s.length() - 1), ' ');
-            sb.append(chArr);
-        }
+
 
         return sb.toString();
     }
