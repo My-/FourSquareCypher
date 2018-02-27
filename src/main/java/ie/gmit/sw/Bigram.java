@@ -8,18 +8,14 @@ import java.util.stream.Stream;
 
 public class Bigram {
 
-//    private char ch1;
-//    private char ch2;
-    private char[] bigram;
-
-    private static Map<Bigram, Bigram> pool = new HashMap<>();
+    private char ch1;
+    private char ch2;
 
     private Bigram(){ }
 
     private Bigram(char ch1, char ch2) {
-//        this.ch1 = ch1;
-//        this.ch2 = ch2;
-        bigram = new char[]{ch1, ch2};
+        this.ch1 = ch1;
+        this.ch2 = ch2;
     }
 
     public static Bigram of(Bigram bigram){
@@ -97,21 +93,21 @@ public class Bigram {
 
 
 
-    private void createPool(Alphabet abc, int posCh1, int posCh2){
-        if( posCh1 == abc.length() || posCh2 == abc.length() ){ return; }
-
-        pool.put(Bigram.of(abc.get(posCh1)), Bigram.of(abc.get(posCh2)));
-        createPool(abc, posCh1 +1, posCh2);
-        createPool(abc, posCh1 , posCh2 +1);
-
-    }
+//    private void createPool(Alphabet abc, int posCh1, int posCh2){
+//        if( posCh1 == abc.length() || posCh2 == abc.length() ){ return; }
+//
+//        pool.put(Bigram.of(abc.get(posCh1)), Bigram.of(abc.get(posCh2)));
+//        createPool(abc, posCh1 +1, posCh2);
+//        createPool(abc, posCh1 , posCh2 +1);
+//
+//    }
 
 
 //    public static StringBuilder toStringBuilder()
 
     public char get(int n){
         if(0 > n || n > 1 ){ throw new IllegalArgumentException("Wrong parameter ("+ n +")"); }
-        return bigram[n]; // n == 0 ? this.ch1 : this.ch2;
+        return n == 0 ? this.ch1 : this.ch2;
     }
 
 //    @Override
@@ -130,8 +126,7 @@ public class Bigram {
 
     @Override
     public String toString() {
-//        return ch1+""+ch2;
-        return String.valueOf(bigram);
+        return ch1+""+ch2;
     }
 
 //    public StringBuffer toStringBuffer() {

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class CypherTest {
 
     @Test
@@ -25,21 +28,25 @@ class CypherTest {
     }
 
     @Test
-    void encrypt() {
+    void encrypt_decrypt_test() {
         String enKey1 = "UVXETRLCYBFIOGAHNDS KMWZP";
         String enKey2 = "AXDOMBZGNK SCHLFPVRUEIYWT";
-        String deKey1 = "UOIGSCKNPLVFWRMZETD AXBHY";
-        String deKey2 = "K EMBVPGNWIODHCRTLZUSYAXF";
 
-        Cypher cypher = Cypher.of(Cypher.alphabet, enKey1, enKey2, deKey1, deKey2);
-        System.out.println(cypher);
+        Cypher cypher = Cypher.of(Cypher.alphabet, enKey1, enKey2);
 
-//        System.out.println(cypher.encrypt(s));
+        assertAll(
+                ()-> assertEquals("AB", cypher.decrypt(cypher.encrypt("AB"))),
+                ()-> assertEquals("BB", cypher.decrypt(cypher.encrypt("BB"))),
+                ()-> assertEquals("GH", cypher.decrypt(cypher.encrypt("GH"))),
+                ()-> assertEquals("  ", cypher.decrypt(cypher.encrypt("QJ")))
 
-        char[] en = cypher.encrypt('A','C');
-        System.out.println(en[0]+ ","+en[1]);
-        char[] de = cypher.decrypt(en[0], en[1]);
-        System.out.println(de[0] +","+de[1]);
+        );
+//        System.out.println(cypher);
+
+//        char[] en = cypher.encrypt('G','K');
+//        System.out.println(en[0]+ ","+en[1]);
+//        char[] de = cypher.decrypt(en[0], en[1]);
+//        System.out.println(de[0] +","+de[1]);
     }
 
     @Test
@@ -49,8 +56,10 @@ class CypherTest {
         String deKey1 = "UOIGSCKNPLVFWRMZETD AXBHY";
         String deKey2 = "K EMBVPGNWIODHCRTLZUSYAXF";
 
-        Cypher cypher = Cypher.of(Cypher.alphabet, enKey1, enKey2, deKey1, deKey2);
+        Cypher cypher = Cypher.of(Cypher.alphabet, enKey1, enKey2);
 
         System.out.println(cypher);
+
+
     }
 }

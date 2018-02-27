@@ -21,8 +21,8 @@ public class Runner {
         String  abc = " ABCDEFGHIKLMNOPRSTUVWXYZ";
         String key1 = "GIVFWMCYZKUXTEP ABDHLNORS";
         String key2 = "TFWXPSKEOULGNH ABCDIMRVYZ";
-//        String path = "/tmp/ramdisk";
-        String path = "/mnt/storage/Git-Hub/FourSquareCypher/out/production/FourSquareCypher";
+        String path = "/tmp/ramdisk";
+//        String path = "/mnt/storage/Git-Hub/FourSquareCypher/out/production/FourSquareCypher";
 //        String path = new Runner().getClass().getResource("/").toString();
         String fileSource = path +"/text/WarAndPeace-LeoTolstoy10.txt";
         String fileEncrypted = path +"/text/encrypted.txt";
