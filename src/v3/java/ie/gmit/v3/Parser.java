@@ -9,9 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Parser {
 
-    public static BlockingDeque<String> queue = new LinkedBlockingDeque<>();
 
-    public static void parser(String path) {
+    public static void parser(String path, BlockingDeque<String> queue) {
 
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(new FileInputStream(path)))){

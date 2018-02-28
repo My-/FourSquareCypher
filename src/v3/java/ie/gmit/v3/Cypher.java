@@ -11,12 +11,16 @@ public class Cypher {
     char[] abc;
     int[] enKey1, enKey2;
     char[][][] deBigrams;
+    char[][][] enBigrams;
 
     private Cypher(String alphabet){
         this.abc = alphabet.toCharArray();
         this.enKey1 = generateRandomKey(this.abc.length);
         this.enKey2 = generateRandomKey(this.abc.length);
-        this.deBigrams = createDeBigrams(this.abc);
+        this.deBigrams = new char[abc.length][abc.length][];
+        this.enBigrams = new char[abc.length][abc.length][];
+        createBigrams(this.abc);
+//        this.deBigrams = createDeBigrams(this.abc);
     }
 
     public static Cypher of(){
@@ -31,8 +35,10 @@ public class Cypher {
         Cypher cypher = new Cypher(alphabet);
         cypher.enKey1 = enKey1.codePoints().map(Cypher::getIndexDefaultABC).toArray();
         cypher.enKey2 = enKey2.codePoints().map(Cypher::getIndexDefaultABC).toArray();
-        cypher.deBigrams = cypher.createDeBigrams(cypher.abc);
-
+        cypher.deBigrams = new char[cypher.abc.length][cypher.abc.length][];
+        cypher.enBigrams = new char[cypher.abc.length][cypher.abc.length][];
+//        cypher.deBigrams = cypher.createDeBigrams(cypher.abc);
+        cypher.createBigrams(cypher.abc);
         return cypher;
     }
 
@@ -58,6 +64,22 @@ public class Cypher {
             }
         }
         return R;
+    }
+
+    void createBigrams(char[] abc) {
+        final int limit = abc.length;
+
+        for(int x = 0; x < limit; x++){
+            for(int y = 0; y < limit; y++){
+
+                char[] encoded = encrypt_v1(abc[x], abc[y]);
+                int enX = getIndexDefaultABC(encoded[0]);
+                int enY = getIndexDefaultABC(encoded[1]);
+
+                this.deBigrams[enX][enY] = new char[]{abc[x], abc[y]};
+                this.enBigrams[x][y] = encoded;
+            }
+        }
     }
 
     String encrypt(String s){
@@ -93,10 +115,17 @@ public class Cypher {
         return sb.toString();
     }
 
-    char[] encrypt(char ch1, char ch2) {
+    char[] encrypt_v1(char ch1, char ch2) {
         int i1 = getIndexDefaultABC(ch1), i2 = getIndexDefaultABC(ch2);
         int c1 = enKey1[(i1 / 5) * 5 + i2 % 5], c2 = enKey2[(i2 / 5) * 5 + i1 % 5];
         return new char[]{abc[c1], abc[c2]};
+    }
+
+    char[] encrypt(char ch1, char ch2) {
+        int i1 = getIndexDefaultABC(ch1), i2 = getIndexDefaultABC(ch2);
+//        int c1 = enKey1[(i1 / 5) * 5 + i2 % 5], c2 = enKey2[(i2 / 5) * 5 + i1 % 5];
+//        return new char[]{abc[c1], abc[c2]};
+        return this.enBigrams[i1][i2];
     }
 
     char[] decrypt(char ch1, char ch2) {
