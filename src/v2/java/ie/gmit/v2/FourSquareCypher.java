@@ -1,12 +1,10 @@
 package ie.gmit.v2;
 
-import ie.gmit.sw.MutableBool;
-import ie.gmit.sw.MutableCharacter;
-import ie.gmit.sw.MyUtils;
+import ie.gmit.v1.MutableBool;
+import ie.gmit.v1.MutableCharacter;
+import ie.gmit.v1.MyUtils;
 
 import java.util.*;
-import java.util.function.UnaryOperator;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class FourSquareCypher {

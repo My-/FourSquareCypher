@@ -3,6 +3,8 @@ package ie.gmit.v2;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.function.IntUnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,5 +79,24 @@ class FourSquareCypherTest {
         FourSquareCypher cipher = FourSquareCypher.of(key1, key2, abc);
 
         System.out.println(cipher.getIndexDefaultABC(' '));
+    }
+
+    @Test
+    void other(){
+        int n = 9119;
+
+        IntUnaryOperator squareIt = it -> (int)Math.pow(it -'0', 2);
+
+        System.out.println(
+                String.valueOf(n).codePoints()
+                        .map(squareIt)
+//                        .boxed()
+                        .mapToObj(String::valueOf)
+                        .collect(Collectors.joining())
+        );
+
+
+
+
     }
 }

@@ -5,14 +5,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.*;
 
 public class Runner {
 
@@ -23,7 +16,7 @@ public class Runner {
         String path = "/tmp/ramdisk";
 //        String path = "/mnt/storage/Git-Hub/FourSquareCypher/out/production/FourSquareCypher";
 //        String path = new Runner().getClass().getResource("/").toString();
-        String fileSource = path +"/text/WarAndPeace-LeoTolstoy.txt";
+        String fileSource = path +"/text/WarAndPeace-LeoTolstoy10.txt";
 //        String fileSource = path +"/text/PoblachtNaHEireann.txt";
         String fileEncrypted = path +"/text/encrypted.txt";
         String fileDecrypted = path +"/text/decrypted.txt";
@@ -32,18 +25,27 @@ public class Runner {
         BlockingDeque<String> queueEn = new LinkedBlockingDeque<>();
         BlockingDeque<String> queueDe = new LinkedBlockingDeque<>();
 
-        Runnable readSrc = ()-> Parser.parser(fileSource, queueEn);
-        Runnable readEn = ()-> Parser.parser(fileEncrypted, queueDe);
-
-        Cypher cypher = Cypher.of();
         Charset charset = StandardCharsets.UTF_8;
-        Path file = FileSystems.getDefault().getPath(fileEncrypted);
+//        FourSquareCypher cypher = FourSquareCypher.of();
+
+        String enKey1 = "UVXETRLCYBFIOGAHNDS KMWZP";
+        String enKey2 = "AXDOMBZGNK SCHLFPVRUEIYWT";
+
+        FourSquareCypher cypher = FourSquareCypher.of(FourSquareCypher.ALPHABET, enKey1, enKey2);
+
+
+
+//        FourSquareCypher cypher = FourSquareCypher.of();
+//        Charset charset = StandardCharsets.UTF_8;
 
         setup = System.nanoTime();
-        System.out.println("    Setup done in: "+ (setup -start) +String.format(" - %.3f sec", (setup -start) /1_000_000_000f));
+        System.out.println("    Setup done in: "+ (setup -start)
+                +String.format(" - %.3f sec", (setup -start) /1_000_000_000f));
 
-//        Parser.parser(fileSource, queueEn);
-        new Thread(readSrc).start();
+        Parser.parser(fileSource, queueEn);
+
+
+
 
 //        Files.write(Paths.get(fileEncrypted),
 //                (Iterable<String>) queueEn.stream()
@@ -52,11 +54,12 @@ public class Runner {
 //                        .map(cypher::encrypt)::iterator);
 
 
-        try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(FileSystems.getDefault().getPath(fileEncrypted), charset)) {
 
             String s;
-            while((s = queueEn.poll()) != null){
+            while((s = queueEn.poll(10, TimeUnit.MILLISECONDS)) != null){
                 String st = cypher.encrypt(s.toUpperCase());
+//                String st = s.toUpperCase();
 //                System.out.println(st);
 //                queueDe.offer(st);
                 writer.write(st, 0, st.length());
@@ -66,23 +69,23 @@ public class Runner {
 
         } catch (IOException x) {
             System.err.format("IOException: %s%n", x);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         encrypt = System.nanoTime();
-        System.out.println("Encryption don in: "+ (encrypt -setup) +String.format(" - %.3f sec", (encrypt -setup) /1_000_000_000f));
+        System.out.println("Encryption done in: "+ (encrypt -setup)
+                +String.format(" - %.3f sec", (encrypt -setup) /1_000_000_000f));
 
-//        Parser.queue.clear();
 
 
-        new Thread(readEn).run();
-//        new Thread(readEn).start();
-//        Parser.parser(fileEncrypted, queueDe);
-        file = FileSystems.getDefault().getPath(fileDecrypted);
 
-        try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
+        Parser.parser(fileEncrypted, queueDe);
+
+        try (BufferedWriter writer = Files.newBufferedWriter(FileSystems.getDefault().getPath(fileDecrypted), charset)) {
 
             String s;
-            while((s = queueDe.poll()) != null){
+            while((s = queueDe.poll(10, TimeUnit.MILLISECONDS)) != null){
                 String st = cypher.decrypt(s.toUpperCase());
 //                System.out.println(st);
                 writer.write(st, 0, st.length());
@@ -98,11 +101,15 @@ public class Runner {
 
         } catch (IOException x) {
             System.err.format("IOException: %s%n", x);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         end = System.nanoTime();
-        System.out.println("Decryption done in: "+ (end -encrypt) +String.format(" - %.3f sec", (end -encrypt) /1_000_000_000f));
-        System.out.println("Total time: "+ (end -start) +String.format(" - %.3f sec", (end -start) /1_000_000_000f));
+        System.out.println("Decryption done in: "+ (end -encrypt)
+                +String.format(" - %.3f sec", (end -encrypt) /1_000_000_000f));
+        System.out.println("Total time: "+ (end -start)
+                +String.format(" - %.3f sec", (end -start) /1_000_000_000f));
 
     }
 }

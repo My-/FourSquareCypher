@@ -1,20 +1,30 @@
 package ie.gmit.v3;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Cypher {
+public class FourSquareCypher implements Cipher{
 
-    static String alphabet = " ABCDEFGHIKLMNOPRSTUVWXYZ";
+    public final static String ALPHABET = " ABCDEFGHIKLMNOPRSTUVWXYZ";
+
     char[] abc;
     int[] enKey1, enKey2;
     char[][][] deBigrams;
     char[][][] enBigrams;
 
-    private Cypher(String alphabet){
+    char[][][] enBigrams265;
+    char[][][] deBigrams265;
+
+
+    Map<Integer, Integer> indexList;
+
+    private FourSquareCypher(String alphabet){
         this.abc = alphabet.toCharArray();
+//        this.indexList = create_indexList(this.abc);
         this.enKey1 = generateRandomKey(this.abc.length);
         this.enKey2 = generateRandomKey(this.abc.length);
         this.deBigrams = new char[abc.length][abc.length][];
@@ -23,22 +33,33 @@ public class Cypher {
 //        this.deBigrams = createDeBigrams(this.abc);
     }
 
-    public static Cypher of(){
-        return new Cypher(Cypher.alphabet);
+    private Map<Integer, Integer> create_indexList(char[] abc) {
+        Map<Integer, Integer> R = new HashMap<>(abc.length);
+
+        final int limit = abc.length;
+        for (int i = 0; i < limit; i++) {
+            R.put((int)abc[i], i);
+        }
+        return R;
     }
 
-    public static Cypher of(String alphabet){
-        return new Cypher(alphabet);
+    public static FourSquareCypher of(){
+        return new FourSquareCypher(FourSquareCypher.ALPHABET);
     }
 
-    public static Cypher of(String alphabet, String enKey1, String enKey2){
-        Cypher cypher = new Cypher(alphabet);
-        cypher.enKey1 = enKey1.codePoints().map(Cypher::getIndexDefaultABC).toArray();
-        cypher.enKey2 = enKey2.codePoints().map(Cypher::getIndexDefaultABC).toArray();
+    public static FourSquareCypher of(String alphabet){
+        return new FourSquareCypher(alphabet);
+    }
+
+    public static FourSquareCypher of(String alphabet, String enKey1, String enKey2){
+        FourSquareCypher cypher = new FourSquareCypher(alphabet);
+        cypher.enKey1 = enKey1.codePoints().map(FourSquareCypher::getIndexDefaultABC).toArray();
+        cypher.enKey2 = enKey2.codePoints().map(FourSquareCypher::getIndexDefaultABC).toArray();
         cypher.deBigrams = new char[cypher.abc.length][cypher.abc.length][];
         cypher.enBigrams = new char[cypher.abc.length][cypher.abc.length][];
 //        cypher.deBigrams = cypher.createDeBigrams(cypher.abc);
         cypher.createBigrams(cypher.abc);
+        cypher.indexList = cypher.create_indexList(cypher.abc);
         return cypher;
     }
 
@@ -77,12 +98,14 @@ public class Cypher {
                 int enY = getIndexDefaultABC(encoded[1]);
 
                 this.deBigrams[enX][enY] = new char[]{abc[x], abc[y]};
+                this.deBigrams[enX][enY] = new char[]{abc[x], abc[y]};
                 this.enBigrams[x][y] = encoded;
             }
         }
     }
 
-    String encrypt(String s){
+    @Override
+    public String encrypt(String s){
         StringBuilder sb = new StringBuilder();
 
         final int limit = s.length();
@@ -100,7 +123,8 @@ public class Cypher {
         return sb.toString();
     }
 
-    String decrypt(String s){
+    @Override
+    public String decrypt(String s){
         StringBuilder sb = new StringBuilder();
 
         final int limit = s.length();
@@ -110,9 +134,15 @@ public class Cypher {
             sb.append(chArr);
         }
 
-
-
         return sb.toString();
+    }
+
+    char[] encrypt256(char ch1, char ch2){
+        return this.enBigrams265[ch1][ch2];
+    }
+
+    char[] decrypt256(char ch1, char ch2){
+        return this.deBigrams265[ch1][ch2];
     }
 
     char[] encrypt_v1(char ch1, char ch2) {
@@ -139,13 +169,25 @@ public class Cypher {
         if( 'A' <= i && i < 'J'){ return i -64; }
         if( 'J' < i && i < 'Q'){ return i -65; }
         if( 'Q' < i && i <= 'Z'){ return i -66; }
+        if( i == 'J' ){ return 'I' -64; }
+        if( i == 'Q' ){ return 'K' -65; }
 
         return 0; // ' ' (space)
     }
 
+
+
+//    int getIndexDefaultABC(int i) {
+//        if(!indexList.containsKey(i)) {
+////            System.out.println((char)i);
+//            return 0;
+//        }
+//        return indexList.get(i);
+//    }
+
     @Override
     public String toString() {
-        return "Cypher{" +
+        return "FourSquareCypher{" +
                 "  \n   abc=" + Arrays.toString(abc) +
                 ", \nenKey1=[" + IntStream.of(enKey1).mapToObj(it-> abc[it] +"").collect(Collectors.joining(", ")) +
                 "], \nenKey2=[" + IntStream.of(enKey2).mapToObj(it-> abc[it] +"").collect(Collectors.joining(", ")) +

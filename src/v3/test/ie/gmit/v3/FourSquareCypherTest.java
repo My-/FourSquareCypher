@@ -8,20 +8,20 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CypherTest {
+class FourSquareCypherTest {
 
     @Test
     void genetateKey_v2() {
 
 //        int i = 0;
 //        while(++i < 100){
-//            System.out.println(Arrays.toString(Cypher.genetateKey_v2(25)));
+//            System.out.println(Arrays.toString(FourSquareCypher.genetateKey_v2(25)));
 //        }
 
         IntStream.range(0,100)
                 .parallel()
                 .forEach(
-                        it-> System.out.println(Arrays.toString(Cypher.generateRandomKey(25)))
+                        it-> System.out.println(Arrays.toString(FourSquareCypher.generateRandomKey(25)))
                 );
 
 
@@ -32,7 +32,7 @@ class CypherTest {
         String enKey1 = "UVXETRLCYBFIOGAHNDS KMWZP";
         String enKey2 = "AXDOMBZGNK SCHLFPVRUEIYWT";
 
-        Cypher cypher = Cypher.of(Cypher.alphabet, enKey1, enKey2);
+        FourSquareCypher cypher = FourSquareCypher.of(FourSquareCypher.ALPHABET, enKey1, enKey2);
 
         assertAll(
                 ()-> assertEquals("AB", cypher.decrypt(cypher.encrypt("AB"))),
@@ -56,7 +56,7 @@ class CypherTest {
         String deKey1 = "UOIGSCKNPLVFWRMZETD AXBHY";
         String deKey2 = "K EMBVPGNWIODHCRTLZUSYAXF";
 
-        Cypher cypher = Cypher.of(Cypher.alphabet, enKey1, enKey2);
+        FourSquareCypher cypher = FourSquareCypher.of(FourSquareCypher.ALPHABET, enKey1, enKey2);
 
         System.out.println(cypher);
 
