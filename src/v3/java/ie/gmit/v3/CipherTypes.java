@@ -1,5 +1,6 @@
 package ie.gmit.v3;
 
+import ie.gmit.v4.FourSquareCipher;
 
 /**
  * CipherTypes enum is used by Cipher interface default method <i>getCipherType()</i> to return Cipher type.
@@ -11,19 +12,15 @@ package ie.gmit.v3;
 enum CipherTypes {
     // https://stackoverflow.com/a/2497532/5322506
 
-    UNKNOWN("Cipher", "", ""),
-    FOUR_SQUARE_CIPHER("Four Square Cipher",
-            MenuFourSquareCipher.setupMenu,
-            MenuFourSquareCipher.cipherSettings);
+    UNKNOWN("Cipher", ""),
+    FOUR_SQUARE_CIPHER("Four Square Cipher", MenuFourSquareCipher.setupMenu);
 
     private String name;
     private String setupMenu;
-    private String cipherSettings;
 
-    CipherTypes(String name, String setupMenu, String cipherSettings){
+    CipherTypes(String name, String setupMenu){
         this.name = name;
         this.setupMenu = setupMenu;
-        this.cipherSettings = cipherSettings;
     }
 
     /**
@@ -32,7 +29,7 @@ enum CipherTypes {
      * @return cipher type as in CipherTypes enum. CipherTypes.UNKNOWN if mach not found.
      */
     public static CipherTypes typeOf(Cipher cipher){
-        if(cipher instanceof FourSquareCypher){ return CipherTypes.FOUR_SQUARE_CIPHER; }
+        if(cipher instanceof FourSquareCipher){ return CipherTypes.FOUR_SQUARE_CIPHER; }
         return CipherTypes.UNKNOWN;
     }
 
@@ -46,18 +43,10 @@ enum CipherTypes {
     }
 
     /**
-     * Gets cipher settings.
-     *
-     * @return
-     */
-    public String getCipherSettings(){
-        return this.cipherSettings;
-    }
-
-    /**
      * Calls setting menu of appropriate class.
      *
-     * @param menu main menu class.
+     * @param choice menu choice.
+     * @param menu Menu instance (mainly for getting Cipher instance)
      */
     public void setupMenu(int choice, Menu menu){
         MenuFourSquareCipher.setupMenu(choice, menu);

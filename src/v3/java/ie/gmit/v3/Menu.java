@@ -25,10 +25,9 @@ public class Menu {
     private String deFile = "/tmp/ramdisk/text/" +SpeedTest.FILE_ENCRYPTED;
 //    private String cipherSettings = "";
 
-    private final String BANNER = "\n" +
-            "===============================\n" +
-            String.format("=   %-26s=\n", cipherType.toString()) +
-            "===============================\n";
+     String BANNER ;
+
+    String BANNER_SETUP;
 
     /**
      * Private constructor used for factory method.
@@ -38,7 +37,14 @@ public class Menu {
     private Menu(Cipher cipher){
         this.cipher = cipher;
         cipherType = CipherTypes.typeOf(cipher); // TODO: fix it
+        BANNER = "\n" +
+                "===============================\n" +
+                String.format("=   %-26s=\n", cipherType.toString()) +
+                "===============================\n";
 
+        BANNER_SETUP = BANNER +
+                "=   SETUP                     =\n"+
+                "===============================\n";
     }
 
     /**
@@ -106,9 +112,7 @@ public class Menu {
      * @param menu Menu instance (dependency injection).
      */
     static void setupMainMenu(Menu menu){
-        String s = menu.BANNER+
-                "=   SETUP                     =\n"+
-                "===============================\n"+
+        String s = menu.BANNER_SETUP+
                 "\n"+
                 "[1] - Files:\n\t - Input: "+ menu.inFile +
                 "\n\t - Encrypted: "+ menu.enFile +
@@ -131,7 +135,7 @@ public class Menu {
      * @param choice menu choice.
      * @param menu Menu instance (dependency injection).
      */
-    private static void setupMainMenu_Do(int choice, Menu menu) {
+    private static void setupMainMenu_Do(int choice, Menu menu) { // TODO: exit from entering file
         String s;
         if( choice == 1 ){
             System.out.println("Enter files full path:\n\t Encryption input file: ");
@@ -162,7 +166,7 @@ public class Menu {
                 "\n"+
                 " File:  "+ menu.inFile +"\n"+
                 " Cipher: "+ menu.cipherType +"\n"+
-                menu.cipherType.getCipherSettings() +"\n"+
+                menu.cipher.getCipherSettings() +"\n"+
                 "-------------------\n"+
                 String.format("[1] - %s\n", cipherAction)+
                 "-------------------\n"+
@@ -203,7 +207,13 @@ public class Menu {
         else if(choice != 0){ System.out.println("Unknown choice: "+ choice); }
     }
 
-
+    /**
+     * Gets Cipher instance
+     * @return Cipher instance.
+     */
+    public Cipher getCipher() {
+        return cipher;
+    }
 }
 
 

@@ -40,6 +40,15 @@ public interface Cipher{
     String decrypt(String s);
 
     /**
+     * Gets Cipher settings as String. Override if needed.
+     *
+     * @return Cipher settings as string.
+     */
+    default String getCipherSettings(){
+        return "";
+    }
+
+    /**
      *  This method opens input file. On each line apply maps function 'beforeAction'
      *  and then maps function 'action'. And then saves lines to output file.
      *

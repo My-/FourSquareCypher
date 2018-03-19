@@ -1,13 +1,13 @@
-package ie.gmit.v4;
+package ie.gmit.sw;
 
 import ie.gmit.v3.Cipher;
 import ie.gmit.v3.FourSquareCypher;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class FourSquareCipher implements Cipher{
     public final static String ALPHABET = " ABCDEFGHIKLMNOPRSTUVWXYZ";
