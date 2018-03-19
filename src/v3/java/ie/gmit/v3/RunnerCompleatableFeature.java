@@ -37,6 +37,9 @@ public class RunnerCompleatableFeature {
 
         FourSquareCypher cypher = FourSquareCypher.of(FourSquareCypher.ALPHABET, enKey1, enKey2);
 
+
+
+
         Runnable writeEncoded = ()-> {
             try (BufferedWriter writer = Files.newBufferedWriter(
                     FileSystems.getDefault().getPath(fileEncrypted), charset)) {

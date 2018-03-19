@@ -1,9 +1,6 @@
 package ie.gmit.v3;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -63,6 +60,15 @@ public class FourSquareCypher implements Cipher{
         return cypher;
     }
 
+//    @Override
+//    public Optional<Cipher> of(Cipher cipher) {
+//        FourSquareCypher c = null;
+//
+//        if(cipher instanceof FourSquareCypher){
+//            c = (FourSquareCypher)cipher;
+//        }
+//        return Optional.ofNullable(c);
+//    }
 
     static int[] generateRandomKey(int length){
         return new Random(System.nanoTime())
@@ -165,7 +171,7 @@ public class FourSquareCypher implements Cipher{
         return this.deBigrams[i1][i2];
     }
 
-    static int getIndexDefaultABC(int i) {
+    public static int getIndexDefaultABC(int i) {
         if( 'A' <= i && i < 'J'){ return i -64; }
         if( 'J' < i && i < 'Q'){ return i -65; }
         if( 'Q' < i && i <= 'Z'){ return i -66; }

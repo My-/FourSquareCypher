@@ -18,7 +18,7 @@ public class RunnerThreads {
         String path = "/tmp/ramdisk";
 //        String path = "/mnt/storage/Git-Hub/FourSquareCypher/out/production/FourSquareCypher";
 //        String path = new Runner().getClass().getResource("/").toString();
-        String fileSource = path +"/text/WarAndPeace-LeoTolstoy10.txt";
+        String fileSource = path +"/text/WarAndPeace-LeoTolstoy.txt";
 //        String fileSource = path +"/text/PoblachtNaHEireann.txt";
         String fileEncrypted = path +"/text/encrypted.txt";
         String fileDecrypted = path +"/text/decrypted.txt";
@@ -47,8 +47,8 @@ public class RunnerThreads {
 
                 String s;
                 while((s = queueEn.poll(10, TimeUnit.MILLISECONDS)) != null){
-//                    String st = cypher.encrypt(s.toUpperCase());
-                    String st = s.toUpperCase();
+                    String st = cypher.encrypt(s.toUpperCase());
+//                    String st = s.toUpperCase();
                     //                String st = s.toUpperCase();
                     //                System.out.println(st);
                     //                queueDe.offer(st);
@@ -85,8 +85,8 @@ public class RunnerThreads {
 
                 String s;
                 while((s = queueDe.poll(10, TimeUnit.MILLISECONDS)) != null){
-//                    String st = cypher.decrypt(s);
-                    String st = s.toLowerCase();
+                    String st = cypher.decrypt(s);
+//                    String st = s.toLowerCase();
 //                System.out.println(st);
                     writer.write(st, 0, st.length());
                     writer.newLine();
@@ -128,13 +128,13 @@ public class RunnerThreads {
 
 //        Parser.parser(fileSource, queueEn);
         new Thread(readSrc).start();
-//        new Thread(readSrc).run();
-//        readSrc.run();
+//        new Thread(readSrc).show();
+//        readSrc.show();
 
 
 //        CompletableFuture cf = CompletableFuture.runAsync(writeEncoded);
 //        new Thread(writeEncoded).start();
-//        new Thread(writeEncoded).run();
+//        new Thread(writeEncoded).show();
         writeEncoded.run();
 
 //        Files.write(Paths.get(fileEncrypted),
@@ -170,12 +170,12 @@ public class RunnerThreads {
 //        Parser.queue.clear();
 
 //        cf.thenRun(readEn);
-//        new Thread(readEn).run();
-//        readEn.run();
+//        new Thread(readEn).show();
+//        readEn.show();
         new Thread(readEn).start();
 
 //        new Thread(writeDecoded).start();
-//        new Thread(writeDecoded).run();
+//        new Thread(writeDecoded).show();
         writeDecoded.run();
 //        Parser.parser(fileEncrypted, queueDe);
 
